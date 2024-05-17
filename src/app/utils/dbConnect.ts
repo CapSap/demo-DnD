@@ -20,6 +20,7 @@ if (!cached) {
 }
 
 async function dbConnect() {
+  console.log("con running");
   if (cached.conn) {
     return cached.conn;
   }
@@ -33,6 +34,7 @@ async function dbConnect() {
   }
   try {
     cached.conn = await cached.promise;
+    console.log("db conn succ");
   } catch (e) {
     cached.promise = null;
     throw e;
