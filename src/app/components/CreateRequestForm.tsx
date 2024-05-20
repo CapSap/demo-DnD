@@ -8,7 +8,7 @@ type item = {
   description: string;
 };
 
-export default function CreateRequestForm() {
+export default function CreateRequestForm({ createStoreRequest }) {
   const [requestingStore, setRequestingStore] = useState("default");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -30,7 +30,17 @@ export default function CreateRequestForm() {
   }
 
   function handleFormSubmit() {
-    console.log(name, phone, email, address, requestingStore);
+    const payload = {
+      name: name,
+      phone: phone,
+      requestingStore: requestingStore,
+      email: email,
+      address: address,
+      items: items,
+    };
+
+    console.log(payload);
+    createStoreRequest(payload);
   }
 
   function handleItemChange(
