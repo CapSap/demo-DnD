@@ -13,7 +13,9 @@ export default function CreateRequestForm({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<Item[]>([
+    { quantity: "", sku: "", description: "" },
+  ]);
 
   const [message, setMessage] = useState("");
 
