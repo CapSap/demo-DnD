@@ -50,13 +50,17 @@ export const createStoreRequest = async (storeRequest) => {
   try {
     await dbConnect();
 
+    // throw new Error("could not write to db");
+
     await StoreRequest.create(storeRequest);
     return { message: "Store request created successfully" };
   } catch (error) {
     console.error(error);
     return {
-      message: "Failed to create store request",
-      details: JSON.stringify(error),
+      error: {
+        message: "Failed to write to databse and create a new request",
+        details: error,
+      },
     };
   }
 };
