@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Item } from "../types/types";
+import { Item, Payload, Store } from "../types/types";
 
 export default function CreateRequestForm({
   createStoreRequest,
 }: {
-  createStoreRequest: (payload: {}) => {};
+  createStoreRequest: (payload: Payload) => Promise<string>;
 }) {
   const [requestingStore, setRequestingStore] = useState("default");
   const [name, setName] = useState("");
@@ -15,7 +15,7 @@ export default function CreateRequestForm({
   const [address, setAddress] = useState("");
   const [items, setItems] = useState<Item[]>([]);
 
-  const [message, setMessage] = useState();
+  const [message, setMessage] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -43,12 +43,8 @@ export default function CreateRequestForm({
       items: items,
     };
 
-    // console.log(payload);
     const message = await createStoreRequest(payload);
-
     setMessage(message);
-
-    console.log(message);
     setLoading(false);
   }
 
@@ -212,7 +208,7 @@ export default function CreateRequestForm({
             Submit order/request to store
           </button>
         </div>
-        <div>{loading ? "Trying Request..." : message}</div>
+        <div>{loading ? "Sending Request..." : message}</div>
       </form>
     </div>
   );

@@ -1,8 +1,9 @@
 import CreateRequestForm from "../components/CreateRequestForm";
-import { createStoreRequest as dbCreate, dbConnect } from "../utils/dbConnect";
+import { Payload } from "../types/types";
+import { createStoreRequest as dbCreate } from "../utils/dbConnect";
 
 export default function CreateRequestPage() {
-  async function createStoreRequest(payload) {
+  async function createStoreRequest(payload: Payload) {
     "use server";
     const response = await dbCreate(payload);
 
