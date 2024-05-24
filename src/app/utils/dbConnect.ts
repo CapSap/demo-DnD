@@ -44,11 +44,19 @@ async function dbConnect() {
   return cached.conn;
 }
 
-const createStoreRequest = async (storeRequest: { name: string }) => {
+export const createStoreRequest = async (storeRequest) => {
   "use server";
   console.log("log from query function", storeRequest);
-  await dbConnect();
-  await StoreRequest.create(storeRequest);
-};
+  try {
+    await dbConnect();
 
-export { dbConnect, createStoreRequest };
+    await StoreRequest.create(storeRequest);
+    return { message: "Store request created successfully" };
+  } catch (error) {
+    console.error(error);
+    return {
+      message: "Failed to create store request",
+      details: JSON.stringify(error),
+    };
+  }
+};
