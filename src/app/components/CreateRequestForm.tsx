@@ -15,6 +15,10 @@ export default function CreateRequestForm({
   const [address, setAddress] = useState("");
   const [items, setItems] = useState<Item[]>([]);
 
+  const [message, setMessage] = useState();
+
+  const [loading, setLoading] = useState(false);
+
   function handleGetMoreItems() {
     setItems((prevState) => {
       return [
@@ -28,7 +32,8 @@ export default function CreateRequestForm({
     });
   }
 
-  function handleFormSubmit() {
+  async function handleFormSubmit() {
+    setLoading(true);
     const payload = {
       name: name,
       phone: phone,
@@ -38,8 +43,13 @@ export default function CreateRequestForm({
       items: items,
     };
 
-    console.log(payload);
-    createStoreRequest(payload);
+    // console.log(payload);
+    const message = await createStoreRequest(payload);
+
+    setMessage(message);
+
+    console.log(message);
+    setLoading(false);
   }
 
   function handleItemChange(
@@ -202,6 +212,7 @@ export default function CreateRequestForm({
             Submit order/request to store
           </button>
         </div>
+        <div>{loading ? "Trying Request..." : message}</div>
       </form>
     </div>
   );
