@@ -1,20 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { Item } from "../types/types";
 
-type item = {
-  sku: string;
-  quantity: string;
-  description: string;
-};
-
-export default function CreateRequestForm({ createStoreRequest }) {
+export default function CreateRequestForm({
+  createStoreRequest,
+}: {
+  createStoreRequest: (payload: {}) => {};
+}) {
   const [requestingStore, setRequestingStore] = useState("default");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [items, setItems] = useState<item[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
 
   function handleGetMoreItems() {
     setItems((prevState) => {
