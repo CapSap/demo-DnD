@@ -15,7 +15,7 @@ export default function CreateRequestForm({
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [items, setItems] = useState<Item[]>([
-    { quantity: "", sku: "", description: "" },
+    { id: Date.now(), quantity: "", sku: "", description: "" },
   ]);
 
   const [message, setMessage] = useState("");
@@ -27,6 +27,7 @@ export default function CreateRequestForm({
       return [
         ...prevState,
         {
+          id: Date.now(),
           sku: "",
           quantity: "",
           description: "",
@@ -71,6 +72,19 @@ export default function CreateRequestForm({
       ];
     });
   }
+
+  function removeSingleItem(
+    e: React.MouseEvent<HTMLButtonElement>,
+    item: Item,
+  ) {
+    e.preventDefault();
+    const newState = items.filter((el, index) => {
+      return item.id !== el.id;
+    });
+    setItems(newState);
+  }
+
+  console.log(items);
 
   return (
     <div className="flex flex-col items-center">
@@ -169,7 +183,7 @@ export default function CreateRequestForm({
                 type="text"
                 name="quantity"
                 id="quantity"
-                value={items[i].quantity}
+                value={item.quantity}
                 onChange={(e) => handleItemChange(e, i)}
                 className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -196,6 +210,12 @@ export default function CreateRequestForm({
                 className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            <button
+              className="rounded-md bg-yellow-200 px-3 py-1"
+              onClick={(e) => removeSingleItem(e, item)}
+            >
+              Remove item
+            </button>
             <StockChecker sku={items[i].sku} />
           </div>
         ))}

@@ -2,6 +2,7 @@ export type Item = {
   sku: string;
   quantity: string;
   description: string;
+  id: number;
 };
 
 export type Store =
