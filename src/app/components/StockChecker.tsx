@@ -31,9 +31,9 @@ export default function StockChecker({ sku }: { sku: string }) {
   console.log(storeStockLevels);
 
   return (
-    <div>
+    <>
       {storeStockLevels && storeStockLevels.length > 0 ? (
-        <div className="grid grid-cols-2 w-1/4 text-center ">
+        <div className="grid max-h-72 grid-cols-2 text-center">
           <h3 className="font-bold">Store Name</h3>
           <h3 className="font-bold">Quantity</h3>
           {storeStockLevels.map((store) => (
@@ -44,8 +44,10 @@ export default function StockChecker({ sku }: { sku: string }) {
           ))}
         </div>
       ) : (
-        <p>Bad sku. Could not find stock levels</p>
+        <div className="flex justify-center self-center">
+          <p>Bad sku. Could not find stock levels</p>
+        </div>
       )}
-    </div>
+    </>
   );
 }
