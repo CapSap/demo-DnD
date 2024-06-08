@@ -73,15 +73,18 @@ export default function CreateRequestForm({
   }
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       <form
+        className="w-2/3"
         action=""
         onSubmit={(e) => {
           e.preventDefault();
           handleFormSubmit();
         }}
       >
-        <div className="flex flex-col">
+        <div className="mb-7 flex flex-col">
+          <h2 className="font-bold">Request info</h2>
+
           <label
             className="flex flex-col text-sm text-gray-800 sm:text-base"
             htmlFor="requestingStore"
@@ -147,13 +150,13 @@ export default function CreateRequestForm({
             className="resize rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
         </div>
-        Item info
-        <div className="flex flex-col items-center justify-center bg-slate-300 md:col-span-2">
+        <h2 className="font-bold">Item info</h2>
+        <div className="flex flex-col items-center justify-center md:col-span-2">
           <p>Request more items: </p>
           <button
             type="button"
             onClick={() => handleGetMoreItems()}
-            className="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 md:text-base"
+            className="rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 md:text-base"
           >
             Get more requests
           </button>
