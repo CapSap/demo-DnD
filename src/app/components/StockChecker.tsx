@@ -33,7 +33,7 @@ export default function StockChecker({ sku }: { sku: string }) {
   return (
     <>
       {storeStockLevels && storeStockLevels.length > 0 ? (
-        <div className="grid grid-cols-2 text-center">
+        <div className="grid max-h-72 grid-cols-2 text-center">
           <h3 className="font-bold">Store Name</h3>
           <h3 className="font-bold">Quantity</h3>
           {storeStockLevels.map((store) => (
