@@ -15,7 +15,7 @@ export default function CreateRequestForm({
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [items, setItems] = useState<Item[]>([
-    { id: Date.now(), quantity: "", sku: "", description: "" },
+    { id: Date.now(), quantity: "1", sku: "", description: "" },
   ]);
 
   const [message, setMessage] = useState("");
@@ -29,7 +29,7 @@ export default function CreateRequestForm({
         {
           id: Date.now(),
           sku: "",
-          quantity: "",
+          quantity: "1",
           description: "",
         },
       ];
