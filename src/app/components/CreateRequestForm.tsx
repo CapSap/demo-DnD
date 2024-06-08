@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Item, Payload, Store } from "../types/types";
 import StockChecker from "./StockChecker";
 
@@ -9,6 +9,8 @@ export default function CreateRequestForm({
 }: {
   createStoreRequest: (payload: Payload) => Promise<string>;
 }) {
+  const selectInput = useRef<HTMLSelectElement>(null);
+
   const [requestingStore, setRequestingStore] = useState("default");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -37,6 +39,11 @@ export default function CreateRequestForm({
   }
 
   async function handleFormSubmit() {
+    if (requestingStore === "default") {
+      handleSubmitWithDefaultLocation();
+      return;
+    }
+
     setLoading(true);
     const payload = {
       name: name,
@@ -84,8 +91,11 @@ export default function CreateRequestForm({
     setItems(newState);
   }
 
-  console.log(items);
-
+  function handleSubmitWithDefaultLocation() {
+    if (selectInput.current) {
+      selectInput.current.focus();
+    }
+  }
   return (
     <div className="flex flex-col items-center">
       <form
@@ -106,6 +116,8 @@ export default function CreateRequestForm({
             Requesting store:
           </label>
           <select
+            ref={selectInput}
+            required={true}
             className="rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
             id={"requestingStore"}
             name="requestingStore"
@@ -130,6 +142,7 @@ export default function CreateRequestForm({
           </select>
           <label htmlFor="customerName">Customer Name</label>
           <input
+            required={true}
             type="text"
             name="customerName"
             id="customerName"
@@ -139,6 +152,7 @@ export default function CreateRequestForm({
           />
           <label htmlFor="phone">Customer Phone</label>
           <input
+            required={true}
             type="text"
             name="customerPhone"
             id="customerPhone"
@@ -191,6 +205,7 @@ export default function CreateRequestForm({
               />
               <label htmlFor="sku">SKU </label>
               <input
+                required={true}
                 type="text"
                 name="sku"
                 id="sku"
@@ -200,6 +215,7 @@ export default function CreateRequestForm({
               />
               <label htmlFor="decription">Description</label>
               <textarea
+                required={true}
                 name="description"
                 id="description"
                 value={items[i].description}
