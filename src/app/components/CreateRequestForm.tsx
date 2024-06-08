@@ -176,30 +176,30 @@ export default function CreateRequestForm({
           </button>
         </div>
         {items.map((item, i) => (
-          <div key={"item" + i}>
-            <div>
-              <label htmlFor="quantity">Quantity</label>
-              <input
-                type="text"
-                name="quantity"
-                id="quantity"
-                value={item.quantity}
-                onChange={(e) => handleItemChange(e, i)}
-                className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-            <div>
-              <label htmlFor="sku">SKU</label>
-              <input
-                type="text"
-                name="sku"
-                id="sku"
-                value={items[i].sku}
-                onChange={(e) => handleItemChange(e, i)}
-                className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-            <div>
+          <div key={"item" + i} className="mb-10 grid grid-cols-2">
+            <div key={"item" + i} className="flex flex-col">
+              <p>Item #{i + 1}</p>
+              <div>
+                <label htmlFor="quantity">Quantity </label>
+                <input
+                  type="number"
+                  min={1}
+                  name="quantity"
+                  id="quantity"
+                  value={item.quantity}
+                  onChange={(e) => handleItemChange(e, i)}
+                  className="rounded-md border-0 p-2.5 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+                <label htmlFor="sku">SKU </label>
+                <input
+                  type="text"
+                  name="sku"
+                  id="sku"
+                  value={items[i].sku}
+                  onChange={(e) => handleItemChange(e, i)}
+                  className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
               <label htmlFor="decription">Description</label>
               <input
                 type="text"
@@ -209,13 +209,13 @@ export default function CreateRequestForm({
                 onChange={(e) => handleItemChange(e, i)}
                 className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
+              <button
+                className="rounded-md bg-yellow-200 px-3 py-1"
+                onClick={(e) => removeSingleItem(e, item)}
+              >
+                Remove item
+              </button>
             </div>
-            <button
-              className="rounded-md bg-yellow-200 px-3 py-1"
-              onClick={(e) => removeSingleItem(e, item)}
-            >
-              Remove item
-            </button>
             <StockChecker sku={items[i].sku} />
           </div>
         ))}
