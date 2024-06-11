@@ -45,7 +45,7 @@ async function dbConnect() {
   return cached.conn;
 }
 
-export const createStoreRequest = async (storeRequest) => {
+export const createStoreRequest = async (storeRequest : IStoreRequest) => {
   "use server";
   console.log("log from query function", storeRequest);
   try {
