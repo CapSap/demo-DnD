@@ -20,8 +20,8 @@ export default async function DashboardPage() {
   } else {
     return (
       <>
-        <h1>Todos</h1>
-        <div>
+        <h1>Seven Hills Todos (to be picked and posted)</h1>
+        <div className="m-10 flex flex-wrap gap-4">
           {requests.map((request) => (
             <RequestCard key={request.id} request={request} />
           ))}
