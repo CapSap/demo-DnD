@@ -1,7 +1,8 @@
 // from https://github.com/vercel/next.js/blob/canary/examples/with-mongodb-mongoose/lib/dbConnect.ts
 
-import mongoose from "mongoose";
+import mongoose, { HydratedDocument }  from "mongoose";
 import { StoreRequest } from "../db/model";
+import { IStoreRequest } from "../types/types";
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
 }
@@ -10,7 +11,7 @@ const MONGODB_URI = process.env.MONGODB_URI!;
 
 if (!MONGODB_URI) {
   throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
+    "Please define the MONGODB_URI environment variable inside .env.local",
   );
 }
 
@@ -44,7 +45,7 @@ async function dbConnect() {
   return cached.conn;
 }
 
-export const createStoreRequest = async (storeRequest) => {
+export const createStoreRequest = async (storeRequest : IStoreRequest) => {
   "use server";
   console.log("log from query function", storeRequest);
   try {
@@ -59,6 +60,26 @@ export const createStoreRequest = async (storeRequest) => {
     return {
       error: {
         message: "Failed to write to databse and create a new request",
+        details: error,
+      },
+    };
+  }
+};
+
+export const getStoreRequests = async () => {
+  "use server";
+  console.log("get requests running");
+
+  try {
+    await dbConnect();
+    const requests: HydratedDocument<IStoreRequest>[] = await StoreRequest.find({});
+
+    return requests;
+  } catch (error) {
+    console.error(error);
+    return {
+      error: {
+        message: "Failed to get requets from database",
         details: error,
       },
     };

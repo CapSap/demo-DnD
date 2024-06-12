@@ -1,13 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Item, Payload, Store } from "../types/types";
+import { Item, StoreRequest, Store } from "../types/types";
 import StockChecker from "./StockChecker";
 
 export default function CreateRequestForm({
   createStoreRequest,
 }: {
-  createStoreRequest: (payload: Payload) => Promise<string>;
+  createStoreRequest: (request: StoreRequest) => Promise<string>;
 }) {
   const selectInput = useRef<HTMLSelectElement>(null);
 

@@ -15,7 +15,7 @@ export type Store =
   | "319"
   | "210";
 
-export type Payload = {
+export type IStoreRequest = {
   name: string;
   phone: string;
   requestingStore: string;

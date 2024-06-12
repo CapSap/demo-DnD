@@ -1,7 +1,8 @@
 import { Timestamp } from "mongodb";
 import mongoose, { mongo } from "mongoose";
+import { IStoreRequest } from "../types/types";
 
-const storeRequest = new mongoose.Schema(
+const storeRequestSchema = new mongoose.Schema<IStoreRequest>(
   {
     name: String,
     phone: String,
@@ -10,8 +11,9 @@ const storeRequest = new mongoose.Schema(
     address: String,
     items: [{ sku: String, quantity: String, description: String }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const StoreRequest =
-  mongoose.models.StoreRequest || mongoose.model("StoreRequest", storeRequest);
+  mongoose.models.StoreRequest ||
+  mongoose.model<IStoreRequest>("StoreRequest", storeRequestSchema);
