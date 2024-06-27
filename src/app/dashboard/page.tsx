@@ -1,13 +1,13 @@
-import RequestCard from "../components/RequestCard";
+import Link from "next/link";
+import DashBoard from "../components/Dashboard";
 import { getStoreRequests } from "../utils/dbConnect";
 
 export default async function DashboardPage() {
   const requests = await getStoreRequests();
 
-  console.log(requests);
+  console.log("dashboard page log", requests[0]);
 
   if ("error" in requests) {
-    console.log(requests);
     return (
       <div>
         <p>
@@ -21,10 +21,9 @@ export default async function DashboardPage() {
     return (
       <>
         <h1>Seven Hills Todos (to be picked and posted)</h1>
+        <Link href={"/picking"}>Go do some picking</Link>
         <div className="m-10 flex flex-wrap gap-4">
-          {requests.map((request) => (
-            <RequestCard key={request.id} request={request} />
-          ))}
+          <DashBoard requests={requests} />
         </div>
       </>
     );
