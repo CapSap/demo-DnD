@@ -1,4 +1,10 @@
 export type Item = {
+  id: string;
+  sku: string;
+  quantity: string;
+  description: string;
+};
+export type ItemDB = {
   _id: string;
   sku: string;
   quantity: string;
@@ -31,5 +37,5 @@ export type IStoreRequestFromDB = {
   requestingStore: string;
   email: string;
   address: string;
-  items: Item[];
+  items: ItemDB[];
 };
