@@ -3,14 +3,19 @@ import RequestCard from "./RequestCard";
 import { useContext, useState } from "react";
 import { RequestContext } from "./RequestContext";
 import { useRouter } from "next/navigation";
+import { IStoreRequestFromDB } from "../types/types";
 
-export default function DashBoard({ requests }) {
-  const [selected, setSelected] = useState([]);
+export default function DashBoard({
+  requests,
+}: {
+  requests: IStoreRequestFromDB[];
+}) {
+  const [selected, setSelected] = useState<IStoreRequestFromDB[]>([]);
   const [_, setRequests] = useContext(RequestContext);
 
   const router = useRouter();
 
-  function handleSelect(request) {
+  function handleSelect(request: IStoreRequestFromDB) {
     setSelected((prev) => {
       if (prev.includes(request)) {
         return prev.filter((item) => item !== request);
