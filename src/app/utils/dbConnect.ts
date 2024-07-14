@@ -2,7 +2,7 @@
 
 import mongoose, { HydratedDocument } from "mongoose";
 import { StoreRequest } from "../db/model";
-import { IStoreRequest } from "../types/types";
+import { IStoreRequest, IStoreRequestFromDB } from "../types/types";
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
 }
@@ -66,17 +66,29 @@ export const createStoreRequest = async (storeRequest: IStoreRequest) => {
   }
 };
 
-export const getStoreRequests = async () => {
+type StoreRequestsResult =
+  | {
+      error: {
+        message: string;
+        details: any;
+      };
+    }
+  | IStoreRequestFromDB[];
+
+export const getStoreRequests = async (): Promise<StoreRequestsResult> => {
   "use server";
   console.log("get requests running");
 
   try {
     await dbConnect();
-    const requests: HydratedDocument<IStoreRequest>[] = await StoreRequest.find(
+    const requests: HydratedDocument<IStoreRequest[]> = await StoreRequest.find(
       {},
     ).lean();
     // only plain objects can be passed to client components from sever components
-    return JSON.parse(JSON.stringify(requests));
+    const plainRequests: IStoreRequestFromDB[] = JSON.parse(
+      JSON.stringify(requests),
+    );
+    return plainRequests;
   } catch (error) {
     console.error(error);
     return {
