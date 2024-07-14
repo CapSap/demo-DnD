@@ -1,20 +1,58 @@
 "use client";
-import { HydratedDocument } from "mongoose";
 import RequestCard from "./RequestCard";
-import { IStoreRequest } from "../types/types";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { RequestContext } from "./RequestContext";
+import { useRouter } from "next/navigation";
 
 export default function DashBoard({ requests }) {
+  const [selected, setSelected] = useState([]);
+  const [_, setRequests] = useContext(RequestContext);
+
+  const router = useRouter();
+
+  function handleSelect(request) {
+    setSelected((prev) => {
+      if (prev.includes(request)) {
+        return prev.filter((item) => item !== request);
+      } else {
+        return [...prev, request];
+      }
+    });
+  }
+
+  function handleButtonClick() {
+    // save context
+    console.log("click");
+    setRequests(selected);
+    // nav to picking
+    router.push("/picking");
+  }
+
+  console.log("testing state", selected);
+  console.log("testing context", _);
+
   return (
     <>
-      <div className="m-10 flex flex-wrap gap-4">
-        {requests &&
-          requests.map((request) => (
-            <>
-              <RequestCard key={request._id} request={request} />
-              <input type="checkbox" name="pick" id="pick" />
-            </>
-          ))}
+      <div>
+        <button onClick={() => handleButtonClick()}>
+          click me to start picking
+        </button>
+      </div>
+      <div>
+        <h2>All orders</h2>
+        <div className="m-10 flex flex-wrap gap-4">
+          {requests &&
+            requests.map((request) => (
+              <RequestCard
+                key={request._id}
+                request={request}
+                handleSelect={handleSelect}
+              />
+            ))}
+        </div>
+      </div>
+      <div>
+        <h2>Orders ready to post</h2>
       </div>
     </>
   );
