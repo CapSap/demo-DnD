@@ -1,8 +1,8 @@
 export type Item = {
+  _id: string;
   sku: string;
   quantity: string;
   description: string;
-  id: number;
 };
 
 export type Store =
@@ -16,6 +16,16 @@ export type Store =
   | "210";
 
 export type IStoreRequest = {
+  name: string;
+  phone: string;
+  requestingStore: string;
+  email: string;
+  address: string;
+  items: Item[];
+};
+
+export type IStoreRequestFromDB = {
+  _id: string;
   name: string;
   phone: string;
   requestingStore: string;
