@@ -1,6 +1,6 @@
 "use client";
 
-import { SetStateAction, createContext, useState } from "react";
+import { createContext, useState } from "react";
 
 type IRequestContext = {
   _id: string;
@@ -18,9 +18,12 @@ type IRequestContext = {
   }[];
 };
 
-export const RequestContext = createContext<
-  [IRequestContext[], React.Dispatch<SetStateAction<IRequestContext[]>>] | null
->(null);
+type ContextValueType = [
+  IRequestContext[],
+  React.Dispatch<React.SetStateAction<IRequestContext[]>>,
+];
+
+export const RequestContext = createContext<ContextValueType>([[], () => {}]);
 
 export default function RequestProvider({
   children,
