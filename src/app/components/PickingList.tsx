@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function PickingList() {
   const [picking, setPicking] = useContext(RequestContext);
-  const [orderBeingPicked, setOrdersBeingPicked] = useState(picking);
+  const [ordersBeingPicked, setOrdersBeingPicked] = useState(picking);
   const [scanValue, setScanValue] = useState("");
 
   const [submitAttempted, setSubmitAttempted] = useState(false);
@@ -16,6 +16,18 @@ export default function PickingList() {
   function handleScan(e) {
     e.preventDefault();
     console.log(scanValue);
+    // translate barcode scan to a sku
+    // map over orderBeingPicked to find 1 item only and update it. (bug = updating 2 items with same sku)
+
+    // find the first request where any of the item.sku === scanValue && item.picked < item.quantity
+    const index = ordersBeingPicked.findIndex((order) => {
+      return order.items.some(
+        (item) => item.sku === scanValue && item.quantityPicked < item.quantity,
+      );
+    });
+
+    console.log("here is the order found", ordersBeingPicked[index]);
+
     // this func will accept a scan from user,
     // then check the sku against all not picked orders.
     // so i need to be aware of which skus i need to pick.
@@ -45,14 +57,14 @@ export default function PickingList() {
     setSubmitAttempted(true);
     // e.preventDefault();
 
-    const isAllPicked = orderBeingPicked?.every((request) =>
+    const isAllPicked = ordersBeingPicked?.every((request) =>
       request.items.every((item) => item.isPicked),
     );
 
     console.log("result of all picked", isAllPicked);
 
     if (isAllPicked) {
-      setPicking(orderBeingPicked);
+      setPicking(ordersBeingPicked);
       router.push("/dashboard");
     }
   }
@@ -80,7 +92,7 @@ export default function PickingList() {
                       <p>Desc: {item.description}</p>
                       <p>Qty: {item.quantity}</p>
                       <p>Sku: {item.sku}</p>
-                      <p>Qty scanned: 0</p>
+                      <p>Qty scanned: {item.quantityPicked}</p>
                       <div>
                         <select
                           name="isPicked"
