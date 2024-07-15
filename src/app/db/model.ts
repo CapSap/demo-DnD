@@ -9,7 +9,14 @@ const storeRequestSchema = new mongoose.Schema<IStoreRequest>(
     requestingStore: String,
     email: String,
     address: String,
-    items: [{ sku: String, quantity: String, description: String }],
+    items: [
+      {
+        sku: String,
+        quantity: String,
+        description: String,
+        quantityPicked: { type: String, default: "0" },
+      },
+    ],
   },
   { timestamps: true },
 );

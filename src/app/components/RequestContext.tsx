@@ -14,7 +14,7 @@ type IRequestContext = {
     sku: string;
     quantity: string;
     description: string;
-    isPicked?: boolean;
+    quantityPicked: string;
   }[];
 };
 
@@ -45,12 +45,14 @@ export default function RequestProvider({
           sku: "506386",
           description: "Mont Sleeping Bag Storage Sack",
           quantity: "2",
+          quantityPicked: "0",
         },
         {
           _id: "2",
           sku: "50746702963NS",
           description: "Mont Batwing Ultralight Thru-Hiker Tarp",
           quantity: "3",
+          quantityPicked: "0",
         },
       ],
     },
