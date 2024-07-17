@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useContext, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { IRequestContext, RequestContext } from "./RequestContext";
 import { useRouter } from "next/navigation";
 import { IStoreRequest } from "../types/types";
@@ -13,6 +13,8 @@ export default function PickingList() {
   const [scanValue, setScanValue] = useState("");
 
   const [submitAttempted, setSubmitAttempted] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setOrdersBeingPicked(picking);
@@ -104,6 +106,10 @@ export default function PickingList() {
 
       return updatedState;
     });
+    // Focus the scan input element when the button is clicked
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   }
 
   function handleDecrementPress(index: number, sku: string) {
@@ -134,12 +140,17 @@ export default function PickingList() {
 
       return updatedState;
     });
+    // Focus the scan input element when the button is clicked
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   }
 
   return (
     <div>
       <form onSubmit={(e) => handleScan(e)}>
         <input
+          ref={inputRef}
           type="text"
           autoFocus
           value={scanValue}
