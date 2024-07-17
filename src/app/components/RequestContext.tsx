@@ -9,14 +9,14 @@ export type IRequestContext = {
   requestingStore: string;
   email: string;
   address: string;
-  status: string;
+  status: "new" | "issue picking";
   items: {
     _id: string;
     sku: string;
     quantity: string;
     description: string;
     quantityPicked: string;
-    itemStatus?: string;
+    itemStatus?: "okay" | "short picked";
   }[];
 };
 
@@ -41,6 +41,7 @@ export default function RequestProvider({
       requestingStore: "Sydn",
       email: "restsetgo@gmail.com",
       address: "123 address road, NSW ,2000",
+      status: "new",
       items: [
         {
           _id: "1",

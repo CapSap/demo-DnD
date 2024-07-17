@@ -24,7 +24,6 @@ export default function PickingList() {
 
   function handleScan(e: FormEvent) {
     e.preventDefault();
-    console.log(scanValue);
 
     setOrdersBeingPicked((prev) => {
       // find the index of the order that has a sku that needs to be picked
@@ -41,6 +40,7 @@ export default function PickingList() {
       }
 
       setScanValue("");
+      setSubmitAttempted(false);
 
       // update the items
       const updatedItems = prev[index].items.map((item) => {
@@ -111,6 +111,7 @@ export default function PickingList() {
     if (inputRef.current) {
       inputRef.current.focus();
     }
+    setSubmitAttempted(false);
   }
 
   function handleDecrementPress(index: number, sku: string) {
@@ -146,6 +147,7 @@ export default function PickingList() {
     if (inputRef.current) {
       inputRef.current.focus();
     }
+    setSubmitAttempted(false);
   }
 
   function handleItemUnavaliablePress(index: number, sku: string) {
@@ -180,6 +182,7 @@ export default function PickingList() {
     if (inputRef.current) {
       inputRef.current.focus();
     }
+    setSubmitAttempted(false);
   }
 
   return (
@@ -203,7 +206,9 @@ export default function PickingList() {
                     <li
                       key={item._id}
                       className={`m-2 flex min-w-72 justify-between border-2 border-slate-400 p-4 ${
-                        submitAttempted && !item.itemStatus
+                        submitAttempted &&
+                        item.itemStatus !== "short picked" &&
+                        item.quantity !== item.quantityPicked
                           ? "border-2 border-red-400 font-bold"
                           : ""
                       }`}
