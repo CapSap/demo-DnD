@@ -16,22 +16,42 @@ export default function PickingList() {
   function handleScan(e) {
     e.preventDefault();
     console.log(scanValue);
-    // translate barcode scan to a sku
-    // map over orderBeingPicked to find 1 item only and update it. (bug = updating 2 items with same sku)
 
-    // find the first request where any of the item.sku === scanValue && item.picked < item.quantity
-    const index = ordersBeingPicked.findIndex((order) => {
+    setOrdersBeingPicked((prev) => {
+      // find the index of the order that has a sku that needs to be picked
+      const index = prev.findIndex((order) => {
       return order.items.some(
-        (item) => item.sku === scanValue && item.quantityPicked < item.quantity,
+          (item) =>
+            item.sku === scanValue && item.quantityPicked < item.quantity,
       );
     });
 
-    console.log("here is the order found", ordersBeingPicked[index]);
+      // handle no sku found
+      if (index === -1) {
+        return prev;
+      }
 
-    // this func will accept a scan from user,
-    // then check the sku against all not picked orders.
-    // so i need to be aware of which skus i need to pick.
-    // and when the list has been updated
+      // update the items
+      const updatedItems = prev[index].items.map((item) => {
+        if (item.sku === scanValue && item.quantityPicked < item.quantity) {
+          return {
+            ...item,
+            quantityPicked: (Number(item.quantityPicked) + 1).toString(),
+          };
+        } else {
+          return item;
+        }
+      });
+      // create a new order with updated scan number
+      const updatedOrder = { ...prev[index], items: updatedItems };
+
+      const updatedState = [
+        ...prev.slice(0, index),
+        updatedOrder,
+        ...prev.slice(index + 1),
+      ];
+      return updatedState;
+    });
   }
 
   function handleChange(e, itemID, pickedOrder) {
@@ -80,8 +100,9 @@ export default function PickingList() {
         />
       </form>
       <form action={handlePickingComplete} noValidate>
-        {picking && picking.length
-          ? picking.map((request) => (
+        <h2>Items to pick</h2>
+        {ordersBeingPicked && ordersBeingPicked.length
+          ? ordersBeingPicked.map((request) => (
               <div key={request._id}>
                 <ul>
                   {request.items.map((item) => (
@@ -118,8 +139,7 @@ export default function PickingList() {
                 </ul>
               </div>
             ))
-          : "no picking found"}
-
+          : "no items to pick"}
         <button type="submit">Apply pick list</button>
       </form>
     </div>
