@@ -208,7 +208,7 @@ export default function PickingList() {
                       className={`m-2 flex min-w-72 justify-between border-2 border-slate-400 p-4 ${
                         submitAttempted &&
                         item.itemStatus !== "short picked" &&
-                        item.quantity !== item.quantityPicked
+                        item.quantityPicked !== item.quantity
                           ? "border-2 border-red-400 font-bold"
                           : ""
                       }`}
