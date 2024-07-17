@@ -74,16 +74,44 @@ export default function PickingList() {
     setSubmitAttempted(true);
     e.preventDefault();
 
-    /*   const isAllPicked = ordersBeingPicked?.every((request) =>
-      request.items.every((item) => item.isPicked),
-    );
+    const isALlPickingDone = ordersBeingPicked.every((order) => {
+      return (
+        order.status === "issue picking" ||
+        order.items.every((item) => item.quantity === item.quantityPicked)
+      );
+    });
 
-    console.log("result of all picked", isAllPicked);
+    // logic here to handle not ready
+    console.log(isALlPickingDone);
 
-    if (isAllPicked) {
-      setPicking(ordersBeingPicked);
-      router.push("/dashboard");
-    } */
+    // update fully fufilled requests
+    const newOrders = ordersBeingPicked.map((order) => {
+      if (order.status === "issue picking") {
+        return order;
+      } else {
+        return { ...order, status: "ready to post" };
+      }
+    });
+
+    // update context? or update database?
+    // i think i want to update the db
+
+    /* 
+     check if all the picking is done or not.
+    
+     how will i check if all of the picking is done?
+      ive got requests with status: "issue picking" or requests where all item.quantiy === item.quantityPicked 
+
+      in both of these cases, ill be okay to submit these orders. because in one, all items have been picked. and the other i want to finialise the picking, and send the order to the next step with status: issue
+
+     what should happen when the user has not finished picking (there is an order where the staus is NOT isse, and outstanding items to pick) 
+
+     dont submit the form, and tell the user.
+
+    should i set request status to ready to post?     and where should i do this? here or during picking?
+    I THINK IT HAS TO BE DONE HERE BECAUSE THE ITEM IS NOT AWARE OF FULL ORDER
+
+*/
   }
 
   function handleIncrementPress(index: number, sku: string) {
