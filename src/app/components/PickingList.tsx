@@ -22,7 +22,7 @@ export default function PickingList() {
 
   const router = useRouter();
 
-  function handleScan(e) {
+  function handleScan(e: FormEvent) {
     e.preventDefault();
     console.log(scanValue);
 
