@@ -2,19 +2,21 @@
 
 import { createContext, useState } from "react";
 
-type IRequestContext = {
+export type IRequestContext = {
   _id: string;
   name: string;
   phone: string;
   requestingStore: string;
   email: string;
   address: string;
+  status: string;
   items: {
     _id: string;
     sku: string;
     quantity: string;
     description: string;
     quantityPicked: string;
+    itemStatus?: string;
   }[];
 };
 

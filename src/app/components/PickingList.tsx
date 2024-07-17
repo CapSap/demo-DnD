@@ -90,6 +90,7 @@ export default function PickingList() {
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
+            itemStatus: "okay",
           };
         } else {
           return item;
@@ -124,6 +125,7 @@ export default function PickingList() {
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) - 1).toString(),
+            itemStatus: "okay",
           };
         } else {
           return item;
@@ -154,7 +156,7 @@ export default function PickingList() {
         if (item.sku === sku) {
           return {
             ...item,
-            itemStatus: "problem picking",
+            itemStatus: "short picked",
           };
         } else {
           return item;
@@ -164,7 +166,7 @@ export default function PickingList() {
       const updatedOrder = {
         ...prev[index],
         items: updatedItems,
-        status: "problem picking",
+        status: "issue picking",
       };
 
       const updatedState = [
@@ -201,7 +203,7 @@ export default function PickingList() {
                     <li
                       key={item._id}
                       className={`m-2 flex min-w-72 justify-between border-2 border-slate-400 p-4 ${
-                        submitAttempted
+                        submitAttempted && !item.itemStatus
                           ? "border-2 border-red-400 font-bold"
                           : ""
                       }`}
@@ -227,7 +229,8 @@ export default function PickingList() {
                         >
                           Undo scan
                         </button>
-                        {item.quantity !== item.quantityPicked ? (
+                        {item.quantity !== item.quantityPicked &&
+                        item.itemStatus !== "short picked" ? (
                           <button
                             className="rounded bg-orange-300 px-4 py-2 hover:bg-orange-700"
                             type="button"
