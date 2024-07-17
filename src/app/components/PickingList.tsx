@@ -146,6 +146,40 @@ export default function PickingList() {
     }
   }
 
+  function handleItemUnavaliablePress(index: number, sku: string) {
+    // mark the item requested as unavaliable so that the?
+    setOrdersBeingPicked((prev) => {
+      // update the items
+      const updatedItems = prev[index].items.map((item) => {
+        if (item.sku === sku) {
+          return {
+            ...item,
+            itemStatus: "problem picking",
+          };
+        } else {
+          return item;
+        }
+      });
+      // create a new order with updated scan number
+      const updatedOrder = {
+        ...prev[index],
+        items: updatedItems,
+        status: "problem picking",
+      };
+
+      const updatedState = [
+        ...prev.slice(0, index),
+        updatedOrder,
+        ...prev.slice(index + 1),
+      ];
+      return updatedState;
+    });
+    // Focus the scan input element when the button is clicked
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }
+
   return (
     <div>
       <form onSubmit={(e) => handleScan(e)}>
@@ -166,27 +200,47 @@ export default function PickingList() {
                   {request.items.map((item) => (
                     <li
                       key={item._id}
-                      className="m-2 flex min-w-72 justify-between border-2 border-slate-400 p-4"
+                      className={`m-2 flex min-w-72 justify-between border-2 border-slate-400 p-4 ${
+                        submitAttempted
+                          ? "border-2 border-red-400 font-bold"
+                          : ""
+                      }`}
                     >
-                      <div className="border-2 border-red-200">
+                      <div className="border-2">
                         <p>Desc: {item.description}</p>
                         <p>Qty: {item.quantity}</p>
                         <p>Sku: {item.sku}</p>
                         <p>Qty scanned: {item.quantityPicked}</p>
                       </div>
-                      <div className="border-2 border-green-200">
+                      <div className="flex flex-col gap-3">
                         <button
+                          className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
                           type="button"
                           onClick={() => handleIncrementPress(index, item.sku)}
                         >
                           Manually increment scan
                         </button>
                         <button
+                          className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
                           type="button"
                           onClick={() => handleDecrementPress(index, item.sku)}
                         >
-                          Undo 1 scan
+                          Undo scan
                         </button>
+                        {item.quantity !== item.quantityPicked ? (
+                          <button
+                            className="rounded bg-orange-300 px-4 py-2 hover:bg-orange-700"
+                            type="button"
+                            onClick={() =>
+                              handleItemUnavaliablePress(index, item.sku)
+                            }
+                          >
+                            Mark{" "}
+                            {Number(item.quantity) -
+                              Number(item.quantityPicked)}{" "}
+                            items as not avaliable
+                          </button>
+                        ) : null}
                       </div>
                     </li>
                   ))}
@@ -195,47 +249,6 @@ export default function PickingList() {
             ))
           : "no items to pick"}
 
-        <h2>Items already picked</h2>
-        {ordersBeingPicked && ordersBeingPicked.length
-          ? ordersBeingPicked
-              .filter((order) => order)
-              .map((request) => (
-                <div key={request._id}>
-                  <ul>
-                    {request.items.map((item) => (
-                      <li
-                        key={item._id}
-                        className="m-2 min-w-72 border-2 border-slate-400 p-4"
-                      >
-                        <p>Desc: {item.description}</p>
-                        <p>Qty: {item.quantity}</p>
-                        <p>Sku: {item.sku}</p>
-                        <p>Qty scanned: {item.quantityPicked}</p>
-                        <div>
-                          <select
-                            name="isPicked"
-                            id="isPicked"
-                            required={true}
-                            defaultValue={""}
-                            className={
-                              submitAttempted
-                                ? "invalid:border-2 invalid:border-red-400 invalid:font-bold"
-                                : ""
-                            }
-                          >
-                            <option value="" disabled={true}>
-                              Please choose an option
-                            </option>
-                            <option value="true">Picked</option>
-                            <option value="false">Not picked</option>
-                          </select>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))
-          : "no itesm picked"}
         <button type="submit">Apply pick list</button>
       </form>
     </div>
