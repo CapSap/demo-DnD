@@ -2,7 +2,7 @@
 
 import mongoose, { HydratedDocument } from "mongoose";
 import { StoreRequest } from "../db/model";
-import { IStoreRequest, IStoreRequestFromDB } from "../types/types";
+import { IStoreRequest } from "../types/types";
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
 }
@@ -73,7 +73,7 @@ type StoreRequestsResult =
         details: any;
       };
     }
-  | IStoreRequestFromDB[];
+  | IStoreRequest[];
 
 export const getStoreRequests = async (): Promise<StoreRequestsResult> => {
   "use server";
@@ -85,9 +85,7 @@ export const getStoreRequests = async (): Promise<StoreRequestsResult> => {
       {},
     ).lean();
     // only plain objects can be passed to client components from sever components
-    const plainRequests: IStoreRequestFromDB[] = JSON.parse(
-      JSON.stringify(requests),
-    );
+    const plainRequests: IStoreRequest[] = JSON.parse(JSON.stringify(requests));
     return plainRequests;
   } catch (error) {
     console.error(error);
