@@ -1,28 +1,11 @@
 "use client";
 
 import { createContext, useState } from "react";
-
-export type IRequestContext = {
-  _id: string;
-  name: string;
-  phone: string;
-  requestingStore: string;
-  email: string;
-  address: string;
-  status: "new" | "issue picking";
-  items: {
-    _id: string;
-    sku: string;
-    quantity: string;
-    description: string;
-    quantityPicked: string;
-    itemStatus?: "okay" | "short picked";
-  }[];
-};
+import { IStoreRequest } from "../types/types";
 
 type ContextValueType = [
-  IRequestContext[],
-  React.Dispatch<React.SetStateAction<IRequestContext[]>>,
+  IStoreRequest[],
+  React.Dispatch<React.SetStateAction<IStoreRequest[]>>,
 ];
 
 export const RequestContext = createContext<ContextValueType>([[], () => {}]);
@@ -32,7 +15,7 @@ export default function RequestProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [picking, setPicking] = useState<IRequestContext[]>([
+  const [picking, setPicking] = useState<IStoreRequest[]>([
     // im not sure if i want to set some inital default context, but ill try this and see
     {
       _id: "1",
@@ -49,6 +32,7 @@ export default function RequestProvider({
           description: "Mont Sleeping Bag Storage Sack",
           quantity: "2",
           quantityPicked: "0",
+          itemStatus: "new",
         },
         {
           _id: "2",
@@ -56,6 +40,8 @@ export default function RequestProvider({
           description: "Mont Batwing Ultralight Thru-Hiker Tarp",
           quantity: "3",
           quantityPicked: "0",
+
+          itemStatus: "new",
         },
       ],
     },

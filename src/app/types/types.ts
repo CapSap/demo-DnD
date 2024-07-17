@@ -3,10 +3,13 @@ export type Item = {
   sku: string;
   quantity: string;
   description: string;
-  itemStatus: "okay" | "short picked" | "new";
+  itemStatus: "okay" | "short picked" | "new" | "fully picked";
+  quantityPicked: string;
 };
 
-export type PartialItem = Partial<Omit<Item, "_id" | "itemStatus">> & {
+export type PartialItem = Partial<
+  Omit<Item, "_id" | "itemStatus" | "quantityPicked">
+> & {
   tempID: number;
   sku: string;
 };
