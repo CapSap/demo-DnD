@@ -20,8 +20,8 @@ export default function PickingList() {
 
   const router = useRouter();
 
-  function handleScan() {
-    // e.preventDefault();
+  function handleScan(e) {
+    e.preventDefault();
     console.log(scanValue);
 
     setOrdersBeingPicked((prev) => {
@@ -37,6 +37,8 @@ export default function PickingList() {
       if (index === -1) {
         return prev;
       }
+
+      setScanValue("");
 
       // update the items
       const updatedItems = prev[index].items.map((item) => {
@@ -136,7 +138,7 @@ export default function PickingList() {
 
   return (
     <div>
-      <form onSubmit={() => handleScan()}>
+      <form onSubmit={(e) => handleScan(e)}>
         <input
           type="text"
           autoFocus
