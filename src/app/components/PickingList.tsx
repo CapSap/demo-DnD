@@ -1,30 +1,37 @@
 "use client";
 
-import { FormEvent, useContext, useState } from "react";
-import { RequestContext } from "./RequestContext";
+import { FormEvent, useContext, useEffect, useState } from "react";
+import { IRequestContext, RequestContext } from "./RequestContext";
 import { useRouter } from "next/navigation";
+import { IStoreRequest } from "../types/types";
 
 export default function PickingList() {
   const [picking, setPicking] = useContext(RequestContext);
-  const [ordersBeingPicked, setOrdersBeingPicked] = useState(picking);
+  const [ordersBeingPicked, setOrdersBeingPicked] = useState<IRequestContext[]>(
+    [],
+  );
   const [scanValue, setScanValue] = useState("");
 
   const [submitAttempted, setSubmitAttempted] = useState(false);
 
+  useEffect(() => {
+    setOrdersBeingPicked(picking);
+  }, [picking]);
+
   const router = useRouter();
 
-  function handleScan(e) {
-    e.preventDefault();
+  function handleScan() {
+    // e.preventDefault();
     console.log(scanValue);
 
     setOrdersBeingPicked((prev) => {
       // find the index of the order that has a sku that needs to be picked
       const index = prev.findIndex((order) => {
-      return order.items.some(
+        return order.items.some(
           (item) =>
             item.sku === scanValue && item.quantityPicked < item.quantity,
-      );
-    });
+        );
+      });
 
       // handle no sku found
       if (index === -1) {
@@ -54,30 +61,12 @@ export default function PickingList() {
     });
   }
 
-  function handleChange(e, itemID, pickedOrder) {
-    const newContext = picking.map((pickedOrder) => {
-      if (pickedOrder._id === pickedOrder._id) {
-        const newItems = pickedOrder.items.map((item) => {
-          if (item._id === itemID) {
-            return { ...item, isPicked: e.target.value };
-          } else {
-            return item;
-          }
-        });
-
-        return { ...pickedOrder, items: newItems };
-      } else return pickedOrder;
-    });
-    console.log(e.target.value, itemID, pickedOrder);
-    setOrdersBeingPicked(newContext);
-  }
-
-  function handlePickingComplete(e: FormEvent<HTMLFormElement>) {
+  function handlePickingComplete(e: FormEvent) {
     console.log("click");
     setSubmitAttempted(true);
-    // e.preventDefault();
+    e.preventDefault();
 
-    const isAllPicked = ordersBeingPicked?.every((request) =>
+    /*   const isAllPicked = ordersBeingPicked?.every((request) =>
       request.items.every((item) => item.isPicked),
     );
 
@@ -86,12 +75,68 @@ export default function PickingList() {
     if (isAllPicked) {
       setPicking(ordersBeingPicked);
       router.push("/dashboard");
-    }
+    } */
+  }
+
+  function handleIncrementPress(index: number, sku: string) {
+    setOrdersBeingPicked((prev) => {
+      // update the items
+      const updatedItems = prev[index].items.map((item) => {
+        if (item.sku === sku && item.quantityPicked < item.quantity) {
+          return {
+            ...item,
+            quantityPicked: (Number(item.quantityPicked) + 1).toString(),
+          };
+        } else {
+          return item;
+        }
+      });
+      // create a new order with updated scan number
+      const updatedOrder = { ...prev[index], items: updatedItems };
+
+      const updatedState = [
+        ...prev.slice(0, index),
+        updatedOrder,
+        ...prev.slice(index + 1),
+      ];
+
+      return updatedState;
+    });
+  }
+
+  function handleDecrementPress(index: number, sku: string) {
+    setOrdersBeingPicked((prev) => {
+      // update the items
+      const updatedItems = prev[index].items.map((item) => {
+        if (
+          item.sku === sku &&
+          item.quantityPicked <= item.quantity &&
+          Number(item.quantityPicked) > 0
+        ) {
+          return {
+            ...item,
+            quantityPicked: (Number(item.quantityPicked) - 1).toString(),
+          };
+        } else {
+          return item;
+        }
+      });
+      // create a new order with updated scan number
+      const updatedOrder = { ...prev[index], items: updatedItems };
+
+      const updatedState = [
+        ...prev.slice(0, index),
+        updatedOrder,
+        ...prev.slice(index + 1),
+      ];
+
+      return updatedState;
+    });
   }
 
   return (
     <div>
-      <form onSubmit={(e) => handleScan(e)}>
+      <form onSubmit={() => handleScan()}>
         <input
           type="text"
           autoFocus
@@ -99,40 +144,36 @@ export default function PickingList() {
           onChange={(e) => setScanValue(e.target.value)}
         />
       </form>
-      <form action={handlePickingComplete} noValidate>
+      <form onSubmit={(e) => handlePickingComplete(e)} noValidate>
         <h2>Items to pick</h2>
         {ordersBeingPicked && ordersBeingPicked.length
-          ? ordersBeingPicked.map((request) => (
+          ? ordersBeingPicked.map((request, index) => (
               <div key={request._id}>
                 <ul>
                   {request.items.map((item) => (
                     <li
                       key={item._id}
-                      className="m-2 min-w-72 border-2 border-slate-400 p-4"
+                      className="m-2 flex min-w-72 justify-between border-2 border-slate-400 p-4"
                     >
-                      <p>Desc: {item.description}</p>
-                      <p>Qty: {item.quantity}</p>
-                      <p>Sku: {item.sku}</p>
-                      <p>Qty scanned: {item.quantityPicked}</p>
-                      <div>
-                        <select
-                          name="isPicked"
-                          id="isPicked"
-                          required={true}
-                          defaultValue={""}
-                          onChange={(e) => handleChange(e, item._id, request)}
-                          className={
-                            submitAttempted
-                              ? "invalid:border-2 invalid:border-red-400 invalid:font-bold"
-                              : ""
-                          }
+                      <div className="border-2 border-red-200">
+                        <p>Desc: {item.description}</p>
+                        <p>Qty: {item.quantity}</p>
+                        <p>Sku: {item.sku}</p>
+                        <p>Qty scanned: {item.quantityPicked}</p>
+                      </div>
+                      <div className="border-2 border-green-200">
+                        <button
+                          type="button"
+                          onClick={() => handleIncrementPress(index, item.sku)}
                         >
-                          <option value="" disabled={true}>
-                            Please choose an option
-                          </option>
-                          <option value="true">Picked</option>
-                          <option value="false">Not picked</option>
-                        </select>
+                          Manually increment scan
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDecrementPress(index, item.sku)}
+                        >
+                          Undo 1 scan
+                        </button>
                       </div>
                     </li>
                   ))}
@@ -140,6 +181,48 @@ export default function PickingList() {
               </div>
             ))
           : "no items to pick"}
+
+        <h2>Items already picked</h2>
+        {ordersBeingPicked && ordersBeingPicked.length
+          ? ordersBeingPicked
+              .filter((order) => order)
+              .map((request) => (
+                <div key={request._id}>
+                  <ul>
+                    {request.items.map((item) => (
+                      <li
+                        key={item._id}
+                        className="m-2 min-w-72 border-2 border-slate-400 p-4"
+                      >
+                        <p>Desc: {item.description}</p>
+                        <p>Qty: {item.quantity}</p>
+                        <p>Sku: {item.sku}</p>
+                        <p>Qty scanned: {item.quantityPicked}</p>
+                        <div>
+                          <select
+                            name="isPicked"
+                            id="isPicked"
+                            required={true}
+                            defaultValue={""}
+                            className={
+                              submitAttempted
+                                ? "invalid:border-2 invalid:border-red-400 invalid:font-bold"
+                                : ""
+                            }
+                          >
+                            <option value="" disabled={true}>
+                              Please choose an option
+                            </option>
+                            <option value="true">Picked</option>
+                            <option value="false">Not picked</option>
+                          </select>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+          : "no itesm picked"}
         <button type="submit">Apply pick list</button>
       </form>
     </div>
