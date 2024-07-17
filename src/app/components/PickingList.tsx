@@ -48,6 +48,10 @@ export default function PickingList() {
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
+            itemStatus:
+              item.quantityPicked === item.quantity
+                ? "fully picked"
+                : item.itemStatus,
           };
         } else {
           return item;
@@ -90,7 +94,10 @@ export default function PickingList() {
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
-            itemStatus: "okay",
+            itemStatus:
+              item.quantityPicked === item.quantity
+                ? "fully picked"
+                : item.itemStatus,
           };
         } else {
           return item;
