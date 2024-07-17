@@ -1,14 +1,14 @@
 export type Item = {
-  id: string;
-  sku: string;
-  quantity: string;
-  description: string;
-};
-export type ItemDB = {
   _id: string;
   sku: string;
   quantity: string;
   description: string;
+  itemStatus: "okay" | "short picked" | "new";
+};
+
+export type PartialItem = Partial<Omit<Item, "_id" | "itemStatus">> & {
+  tempID: number;
+  sku: string;
 };
 
 export type Store =
@@ -22,20 +22,19 @@ export type Store =
   | "210";
 
 export type IStoreRequest = {
-  name: string;
-  phone: string;
-  requestingStore: string;
-  email: string;
-  address: string;
-  items: Item[];
-};
-
-export type IStoreRequestFromDB = {
   _id: string;
   name: string;
   phone: string;
   requestingStore: string;
   email: string;
   address: string;
-  items: ItemDB[];
+  items: Item[];
+  status: "new" | "issue picking" | "ready to post";
+};
+
+export type IPartialStoreRequest = Partial<
+  Omit<IStoreRequest, "_id" | "items" | "status">
+> & {
+  _id?: string;
+  items: PartialItem[];
 };
