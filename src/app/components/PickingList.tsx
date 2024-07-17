@@ -133,7 +133,7 @@ export default function PickingList() {
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) - 1).toString(),
-            itemStatus: "okay",
+            itemStatus: "new",
           };
         } else {
           return item;
