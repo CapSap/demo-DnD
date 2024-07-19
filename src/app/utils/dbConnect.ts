@@ -1,8 +1,7 @@
 // from https://github.com/vercel/next.js/blob/canary/examples/with-mongodb-mongoose/lib/dbConnect.ts
-
 import mongoose, { HydratedDocument } from "mongoose";
 import { StoreRequest } from "../db/model";
-import { IStoreRequest } from "../types/types";
+import { IStoreRequest, Item } from "../types/types";
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
 }
@@ -50,7 +49,6 @@ export const createStoreRequest = async (storeRequest: IStoreRequest) => {
   console.log("log from query function", storeRequest);
   try {
     await dbConnect();
-
     // throw new Error("could not write to db");
 
     await StoreRequest.create(storeRequest);
@@ -89,6 +87,58 @@ export const getStoreRequests = async (): Promise<StoreRequestsResult> => {
     return plainRequests;
   } catch (error) {
     console.error(error);
+    return {
+      error: {
+        message: "Failed to get requets from database",
+        details: error,
+      },
+    };
+  }
+};
+
+function convertId<T extends IStoreRequest | Item>(
+  object: T,
+): T & { _id: mongoose.Types.ObjectId } {
+  return {
+    ...object,
+    _id: mongoose.Types.ObjectId.createFromHexString(object._id),
+  };
+}
+
+export const updateManyStoreRequests = async (request) => {
+  "use server";
+  console.log("update many running...");
+  const manyRequests = JSON.parse(request);
+
+  const requestsWithObjIds = manyRequests.map((request: IStoreRequest) => {
+    return {
+      ...convertId(request),
+      items: request.items.map((item: Item) => convertId(item)),
+    };
+  });
+
+  const bulkOps = requestsWithObjIds.map((request: IStoreRequest) => {
+    return {
+      updateOne: {
+        filter: { _id: request._id },
+        update: {
+          $set: {
+            status: request.status,
+            items: request.items,
+          },
+        },
+      },
+    };
+  });
+  console.log(JSON.stringify(requestsWithObjIds));
+  console.log(JSON.stringify(bulkOps));
+
+  try {
+    await dbConnect();
+    const result = await StoreRequest.bulkWrite(bulkOps);
+    console.log(result);
+    return;
+  } catch (error) {
     return {
       error: {
         message: "Failed to get requets from database",
