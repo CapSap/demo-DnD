@@ -1,11 +1,15 @@
 "use client";
 
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
-import { IRequestContext, RequestContext } from "./RequestContext";
+import { RequestContext } from "./RequestContext";
 import { useRouter } from "next/navigation";
-import { IStoreRequest } from "../types/types";
+import { IStoreRequest, Item } from "../types/types";
 
-export default function PickingList() {
+export default function PickingList({
+  updateManyStoreRequests,
+}: {
+  updateManyStoreRequests: (request: string) => Promise<string>;
+}) {
   const [picking, setPicking] = useContext(RequestContext);
   const [ordersBeingPicked, setOrdersBeingPicked] = useState<IStoreRequest[]>(
     [],
