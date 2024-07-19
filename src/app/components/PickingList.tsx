@@ -7,7 +7,7 @@ import { IStoreRequest } from "../types/types";
 
 export default function PickingList() {
   const [picking, setPicking] = useContext(RequestContext);
-  const [ordersBeingPicked, setOrdersBeingPicked] = useState<IRequestContext[]>(
+  const [ordersBeingPicked, setOrdersBeingPicked] = useState<IStoreRequest[]>(
     [],
   );
   const [scanValue, setScanValue] = useState("");
