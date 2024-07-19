@@ -108,42 +108,45 @@ function convertId<T extends IStoreRequest | Item>(
 export const updateManyStoreRequests = async (request) => {
   "use server";
   console.log("update many running...");
-  const manyRequests = JSON.parse(request);
-
-  const requestsWithObjIds = manyRequests.map((request: IStoreRequest) => {
-    return {
-      ...convertId(request),
-      items: request.items.map((item: Item) => convertId(item)),
-    };
-  });
-
-  const bulkOps = requestsWithObjIds.map((request: IStoreRequest) => {
-    return {
-      updateOne: {
-        filter: { _id: request._id },
-        update: {
-          $set: {
-            status: request.status,
-            items: request.items,
-          },
-        },
-      },
-    };
-  });
-  console.log(JSON.stringify(requestsWithObjIds));
-  console.log(JSON.stringify(bulkOps));
 
   try {
+    const manyRequests = JSON.parse(request);
+
+    const requestsWithObjIds = manyRequests.map((request: IStoreRequest) => {
+      return {
+        ...convertId(request),
+        items: request.items.map((item: Item) => convertId(item)),
+      };
+    });
+
+    const bulkOps = requestsWithObjIds.map((request: IStoreRequest) => {
+      return {
+        updateOne: {
+          filter: { _id: request._id },
+          update: {
+            $set: {
+              status: request.status,
+              items: request.items,
+            },
+          },
+        },
+      };
+    });
+    console.log(JSON.stringify(requestsWithObjIds));
+    console.log(JSON.stringify(bulkOps));
+
     await dbConnect();
     const result = await StoreRequest.bulkWrite(bulkOps);
-    console.log(result);
-    return;
-  } catch (error) {
-    return {
+    console.log(result.modifiedCount);
+
+    return JSON.stringify(result);
+  } catch (err) {
+    const error = err as Error; // Type assertion
+    return JSON.stringify({
       error: {
-        message: "Failed to get requets from database",
-        details: error,
+        message: `Failed to update database. ${error.name}: ${error.message} `,
+        stack: error.stack,
       },
-    };
+    });
   }
 };
