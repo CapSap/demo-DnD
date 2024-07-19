@@ -105,7 +105,7 @@ function convertId<T extends IStoreRequest | Item>(
   };
 }
 
-export const updateManyStoreRequests = async (request) => {
+export const updateManyStoreRequests = async (request: string) => {
   "use server";
   console.log("update many running...");
 
