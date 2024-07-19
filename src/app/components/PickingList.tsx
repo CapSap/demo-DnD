@@ -15,9 +15,9 @@ export default function PickingList({
     [],
   );
   const [scanValue, setScanValue] = useState("");
-
   const [submitAttempted, setSubmitAttempted] = useState(false);
 
+  const [message, setMessage] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -61,8 +61,11 @@ export default function PickingList({
           return item;
         }
       });
-      // create a new order with updated scan number
-      const updatedOrder = { ...prev[index], items: updatedItems };
+      // create a new order with updated scan count
+      const updatedOrder = {
+        ...prev[index],
+        items: updatedItems,
+      };
 
       const updatedState = [
         ...prev.slice(0, index),
@@ -73,8 +76,8 @@ export default function PickingList({
     });
   }
 
-  function handlePickingComplete(e: FormEvent) {
-    console.log("click");
+  async function handlePickingComplete(e: FormEvent) {
+    console.log("apply pick list clicked");
     setSubmitAttempted(true);
     e.preventDefault();
 
@@ -88,34 +91,31 @@ export default function PickingList({
     // logic here to handle not ready
     console.log(isALlPickingDone);
 
-    // update fully fufilled requests
-    const newOrders = ordersBeingPicked.map((order) => {
-      if (order.status === "issue picking") {
-        return order;
-      } else {
-        return { ...order, status: "ready to post" };
+    if (isALlPickingDone) {
+      // update fully fufilled requests
+      const ordersWithFinalStatusUpdate = ordersBeingPicked.map((order) => {
+        if (order.status === "issue picking") {
+          return order;
+        } else {
+          return { ...order, status: "ready to post" };
+        }
+      });
+
+      const payload = JSON.stringify(ordersWithFinalStatusUpdate);
+      const result = await updateManyStoreRequests(payload);
+      const resultObject = JSON.parse(result);
+
+      if ("error" in resultObject) {
+        setMessage(resultObject.error.message);
+        setSubmitAttempted(false);
       }
-    });
-
-    // update context? or update database?
-    // i think i want to update the db
-
-    /* 
-     check if all the picking is done or not.
-    
-     how will i check if all of the picking is done?
-      ive got requests with status: "issue picking" or requests where all item.quantiy === item.quantityPicked 
-
-      in both of these cases, ill be okay to submit these orders. because in one, all items have been picked. and the other i want to finialise the picking, and send the order to the next step with status: issue
-
-     what should happen when the user has not finished picking (there is an order where the staus is NOT isse, and outstanding items to pick) 
-
-     dont submit the form, and tell the user.
-
-    should i set request status to ready to post?     and where should i do this? here or during picking?
-    I THINK IT HAS TO BE DONE HERE BECAUSE THE ITEM IS NOT AWARE OF FULL ORDER
-
-*/
+      // if no error set message, pause and then navigate to dashboard
+      setMessage(
+        `${resultObject.modifiedCount} of ${ordersBeingPicked.length} orders updated successfully. Navigating to dashboard...`,
+      );
+      setSubmitAttempted(false);
+      setTimeout(() => router.push("/dashboard"), 4000);
+    }
   }
 
   function handleIncrementPress(index: number, sku: string) {
@@ -156,12 +156,13 @@ export default function PickingList({
   function handleDecrementPress(index: number, sku: string) {
     setOrdersBeingPicked((prev) => {
       // update the items
-      const updatedItems = prev[index].items.map((item) => {
+      const updatedItems: Item[] = prev[index].items.map((item) => {
         if (
           item.sku === sku &&
           item.quantityPicked <= item.quantity &&
           Number(item.quantityPicked) > 0
         ) {
+          console.log(item.itemStatus);
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) - 1).toString(),
@@ -172,7 +173,10 @@ export default function PickingList({
         }
       });
       // create a new order with updated scan number
-      const updatedOrder = { ...prev[index], items: updatedItems };
+      const updatedOrder = {
+        ...prev[index],
+        items: updatedItems,
+      };
 
       const updatedState = [
         ...prev.slice(0, index),
@@ -193,8 +197,9 @@ export default function PickingList({
     // mark the item requested as unavaliable so that the?
     setOrdersBeingPicked((prev) => {
       // update the items
-      const updatedItems = prev[index].items.map((item) => {
+      const updatedItems: Item[] = prev[index].items.map((item) => {
         if (item.sku === sku) {
+          console.log(item.itemStatus);
           return {
             ...item,
             itemStatus: "short picked",
@@ -204,7 +209,7 @@ export default function PickingList({
         }
       });
       // create a new order with updated scan number
-      const updatedOrder = {
+      const updatedOrder: IStoreRequest = {
         ...prev[index],
         items: updatedItems,
         status: "issue picking",
@@ -298,6 +303,8 @@ export default function PickingList({
 
         <button type="submit">Apply pick list</button>
       </form>
+
+      <div>{submitAttempted ? "Sending Request..." : message}</div>
     </div>
   );
 }
