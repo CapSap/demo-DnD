@@ -1,4 +1,3 @@
-import { Timestamp } from "mongodb";
 import mongoose, { mongo } from "mongoose";
 import { IStoreRequest } from "../types/types";
 
@@ -9,12 +8,19 @@ const storeRequestSchema = new mongoose.Schema<IStoreRequest>(
     requestingStore: String,
     email: String,
     address: String,
+    status: { type: String, enum: ["new", "issue picking"], default: "new" },
+
     items: [
       {
         sku: String,
         quantity: String,
         description: String,
         quantityPicked: { type: String, default: "0" },
+        itemStatus: {
+          type: String,
+          enum: ["okay", "short picked", "new"],
+          default: "new",
+        },
       },
     ],
   },
