@@ -1,7 +1,7 @@
 // from https://github.com/vercel/next.js/blob/canary/examples/with-mongodb-mongoose/lib/dbConnect.ts
 import mongoose, { HydratedDocument } from "mongoose";
 import { StoreRequest } from "../db/model";
-import { IStoreRequest, Item } from "../types/types";
+import { IPartialStoreRequest, IStoreRequest, Item } from "../types/types";
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
 }
@@ -44,7 +44,9 @@ async function dbConnect() {
   return cached.conn;
 }
 
-export const createStoreRequest = async (storeRequest: IStoreRequest) => {
+export const createStoreRequest = async (
+  storeRequest: IPartialStoreRequest,
+) => {
   "use server";
   console.log("log from query function", storeRequest);
   try {

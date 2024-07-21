@@ -1,9 +1,9 @@
 import CreateRequestForm from "../components/CreateRequestForm";
-import { IStoreRequest } from "../types/types";
+import { IPartialStoreRequest, IStoreRequest } from "../types/types";
 import { createStoreRequest as dbCreate } from "../utils/dbConnect";
 
 export default function CreateRequestPage() {
-  async function createStoreRequest(request: IStoreRequest) {
+  async function createStoreRequest(request: IPartialStoreRequest) {
     "use server";
     const response = await dbCreate(request);
 
