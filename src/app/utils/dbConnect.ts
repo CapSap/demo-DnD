@@ -2,6 +2,8 @@
 import mongoose, { HydratedDocument } from "mongoose";
 import { StoreRequest } from "../db/model";
 import { IPartialStoreRequest, IStoreRequest, Item } from "../types/types";
+import { revalidatePath } from "next/cache";
+
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
 }
@@ -77,7 +79,7 @@ type StoreRequestsResult =
 
 export const getStoreRequests = async (): Promise<StoreRequestsResult> => {
   "use server";
-  console.log("get requests running");
+  console.log("get requests function running");
 
   try {
     await dbConnect();
@@ -110,6 +112,9 @@ function convertId<T extends IStoreRequest | Item>(
 export const updateManyStoreRequests = async (request: string) => {
   "use server";
   console.log("update many running...");
+
+  // after updating many requests, get data again on the dashboard route
+  revalidatePath("/dashboard");
 
   try {
     const manyRequests = JSON.parse(request);
