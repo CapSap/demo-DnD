@@ -1,8 +1,9 @@
 // from https://github.com/vercel/next.js/blob/canary/examples/with-mongodb-mongoose/lib/dbConnect.ts
-
-import mongoose, { HydratedDocument }  from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 import { StoreRequest } from "../db/model";
-import { IStoreRequest } from "../types/types";
+import { IPartialStoreRequest, IStoreRequest, Item } from "../types/types";
+import { revalidatePath } from "next/cache";
+
 declare global {
   var mongoose: any; // This must be a `var` and not a `let / const`
 }
@@ -45,12 +46,13 @@ async function dbConnect() {
   return cached.conn;
 }
 
-export const createStoreRequest = async (storeRequest : IStoreRequest) => {
+export const createStoreRequest = async (
+  storeRequest: IPartialStoreRequest,
+) => {
   "use server";
   console.log("log from query function", storeRequest);
   try {
     await dbConnect();
-
     // throw new Error("could not write to db");
 
     await StoreRequest.create(storeRequest);
@@ -66,15 +68,27 @@ export const createStoreRequest = async (storeRequest : IStoreRequest) => {
   }
 };
 
-export const getStoreRequests = async () => {
+type StoreRequestsResult =
+  | {
+      error: {
+        message: string;
+        details: any;
+      };
+    }
+  | IStoreRequest[];
+
+export const getStoreRequests = async (): Promise<StoreRequestsResult> => {
   "use server";
-  console.log("get requests running");
+  console.log("get requests function running");
 
   try {
     await dbConnect();
-    const requests: HydratedDocument<IStoreRequest>[] = await StoreRequest.find({});
-
-    return requests;
+    const requests: HydratedDocument<IStoreRequest[]> = await StoreRequest.find(
+      {},
+    ).lean();
+    // only plain objects can be passed to client components from sever components
+    const plainRequests: IStoreRequest[] = JSON.parse(JSON.stringify(requests));
+    return plainRequests;
   } catch (error) {
     console.error(error);
     return {
@@ -83,5 +97,63 @@ export const getStoreRequests = async () => {
         details: error,
       },
     };
+  }
+};
+
+function convertId<T extends IStoreRequest | Item>(
+  object: T,
+): T & { _id: mongoose.Types.ObjectId } {
+  return {
+    ...object,
+    _id: mongoose.Types.ObjectId.createFromHexString(object._id),
+  };
+}
+
+export const updateManyStoreRequests = async (request: string) => {
+  "use server";
+  console.log("update many running...");
+
+  // after updating many requests, get data again from db on the dashboard route
+  revalidatePath("/dashboard");
+
+  try {
+    const manyRequests = JSON.parse(request);
+
+    const requestsWithObjIds = manyRequests.map((request: IStoreRequest) => {
+      return {
+        ...convertId(request),
+        items: request.items.map((item: Item) => convertId(item)),
+      };
+    });
+
+    const bulkOps = requestsWithObjIds.map((request: IStoreRequest) => {
+      return {
+        updateOne: {
+          filter: { _id: request._id },
+          update: {
+            $set: {
+              status: request.status,
+              items: request.items,
+            },
+          },
+        },
+      };
+    });
+    console.log(JSON.stringify(requestsWithObjIds));
+    console.log(JSON.stringify(bulkOps));
+
+    await dbConnect();
+    const result = await StoreRequest.bulkWrite(bulkOps);
+    console.log(result.modifiedCount);
+
+    return JSON.stringify(result);
+  } catch (err) {
+    const error = err as Error; // Type assertion
+    return JSON.stringify({
+      error: {
+        message: `Failed to update database. ${error.name}: ${error.message} `,
+        stack: error.stack,
+      },
+    });
   }
 };

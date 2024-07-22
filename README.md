@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+MVP document
 
-## Getting Started
+This document is a stripped down MVP version of the project
 
-First, run the development server:
+# Defining the problem:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+When retail stores want to commuincate a request to the Seven Hills warehouse location, google sheets are used. The use of google sheets has the following issues:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- not intuative. For example- putting all product information (sku, qty, description) within a single cell and using variable formatting
+- prone to errors
+- does not integrate with existing tech (scanners and shipping software)
+- The overall process relies on manual, disconnected steps that should be part of a linked system.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+What google sheet does well:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- One centralised location for the seven hills team to view all requests
+- Reliable / robust text transfer
+- Simple process
 
-## Learn More
+The use of google sheets represents an area where an application could step in the improve the overall process.
 
-To learn more about Next.js, take a look at the following resources:
+# Goals
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Replace the use of googlesheets when paddy pallin retail stores make a request to the seven hills warehouse
+2. Demonstrate value of a bespoke app
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+For the app to be successful, it needs to be an improvement on the existing system and gain user acceptance. Key areas where I can see how an app will improve things are:
 
-## Deploy on Vercel
+- Scan to complete picking using zebra scanners
+- More intuative / user friendly than a spreadsheet
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Stakeholders
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Retail store staff - Imporove efficieny and reduce errors. Tool more intuative and easier to use than google sheet
+- Seven Hills staff - Improve efficieny and reduce errors
+- Customers - Reduce errors and improved overall expereience
+
+# MVP User Stories
+
+## Customer
+
+- a customer will be assigned a order reference number that they can quote to help staff person find request status
+
+## Seven Hills staff
+
+- a seven hills person can view all orders in a single dashboard view #17
+- a seven hills person can scan barcodes to complete picking #19
+- a seven hills person can generate a shipping label from the app via details entered from staff person
+- a seven hills person can easily tell app which orders are being packed at once
+- a seven hills person can mark an item oos
+
+# Retail staff person
+
+- a store staff person can create a customer request #2
+- a staff person can search for products (skus) via item description #3
+- a staff person can scan in a barcode or SKU directly #4
+- a staff person can choose between deliver to store and ship direct to customer #5
+- a staff person can see a dashboard of past orders, pending orders #6
+- a staff person can easily find where a person's request is up to (in transit w/ tracking or ETA, arrived in store with location notes)
+- a staff person can check SOH via app (public website endpoint) and get an idea where stock might come from
+
+# Functional Requirements
+
+- Secure login
+
+# Validation and Testing
+
+TBD.
+Test Plan
+Test Cases
+Validation Criteria

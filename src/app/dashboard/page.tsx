@@ -1,13 +1,24 @@
-import RequestCard from "../components/RequestCard";
+import Link from "next/link";
+import DashBoard from "../components/Dashboard";
 import { getStoreRequests } from "../utils/dbConnect";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function DashboardPage() {
   const requests = await getStoreRequests();
 
-  console.log(requests);
+  /*
+
+  const requests = await fetch("http://localhost:3000/api/db", {
+    cache: "no-store",
+  })
+    .then((res) => res.json())
+    .then((res) => res.data);
+
+*/
 
   if ("error" in requests) {
-    console.log(requests);
     return (
       <div>
         <p>
@@ -22,9 +33,7 @@ export default async function DashboardPage() {
       <>
         <h1>Seven Hills Todos (to be picked and posted)</h1>
         <div className="m-10 flex flex-wrap gap-4">
-          {requests.map((request) => (
-            <RequestCard key={request.id} request={request} />
-          ))}
+          <DashBoard requests={requests} />
         </div>
       </>
     );

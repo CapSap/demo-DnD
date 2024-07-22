@@ -1,13 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Item, StoreRequest, Store } from "../types/types";
+import { Item, IPartialStoreRequest, PartialItem } from "../types/types";
 import StockChecker from "./StockChecker";
 
 export default function CreateRequestForm({
   createStoreRequest,
 }: {
-  createStoreRequest: (request: StoreRequest) => Promise<string>;
+  createStoreRequest: (request: IPartialStoreRequest) => Promise<string>;
 }) {
   const selectInput = useRef<HTMLSelectElement>(null);
 
@@ -16,8 +16,8 @@ export default function CreateRequestForm({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [items, setItems] = useState<Item[]>([
-    { id: Date.now(), quantity: "1", sku: "", description: "" },
+  const [items, setItems] = useState<PartialItem[]>([
+    { tempID: Date.now(), quantity: "1", sku: "", description: "" },
   ]);
 
   const [message, setMessage] = useState("");
@@ -29,7 +29,7 @@ export default function CreateRequestForm({
       return [
         ...prevState,
         {
-          id: Date.now(),
+          tempID: Date.now(),
           sku: "",
           quantity: "1",
           description: "",
@@ -82,11 +82,11 @@ export default function CreateRequestForm({
 
   function removeSingleItem(
     e: React.MouseEvent<HTMLButtonElement>,
-    item: Item,
+    item: PartialItem,
   ) {
     e.preventDefault();
     const newState = items.filter((el, index) => {
-      return item.id !== el.id;
+      return item.tempID !== el.tempID;
     });
     setItems(newState);
   }
@@ -230,6 +230,7 @@ export default function CreateRequestForm({
               </button>
             </div>
             <StockChecker sku={items[i].sku} />
+            <StockChecker sku={item.sku} />
           </div>
         ))}
         <div className="flex flex-col items-center justify-center md:col-span-2">
