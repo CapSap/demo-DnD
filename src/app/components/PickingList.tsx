@@ -4,7 +4,7 @@ import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { RequestContext } from "./RequestContext";
 import { useRouter } from "next/navigation";
 import { IStoreRequest, Item } from "../types/types";
-import { barcodeData } from "../utils/barcode";
+import { data as barcodeData } from "../utils/data";
 
 export default function PickingList({
   updateManyStoreRequests,
