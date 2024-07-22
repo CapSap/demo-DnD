@@ -28,6 +28,7 @@ export default function RequestCard({
               {item.quantity} x {item.sku}
             </p>
             <p>{item.description}</p>
+            <p>qty picked: {item.quantityPicked}</p>
           </li>
         ))}
       </ul>
