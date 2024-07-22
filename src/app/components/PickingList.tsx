@@ -17,7 +17,7 @@ export default function PickingList({
   );
   const [scanValue, setScanValue] = useState("");
   const [submitAttempted, setSubmitAttempted] = useState(false);
-  const [wrong, setWrong] = useState(false);
+  const [wrongItemScanned, setWrongItemScanned] = useState(false);
 
   const [message, setMessage] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -59,11 +59,11 @@ export default function PickingList({
 
       // handle no sku found
       if (index === -1) {
-        setWrong(true);
+        setWrongItemScanned(true);
         return prev;
       }
 
-      setWrong(false);
+      setWrongItemScanned(false);
       setScanValue("");
       setSubmitAttempted(false);
 
@@ -260,7 +260,9 @@ export default function PickingList({
           value={scanValue}
           onChange={(e) => setScanValue(e.target.value)}
         />
-        {wrong ? <p className="bg-red-400">wrong item scanned</p> : null}
+        {wrongItemScanned ? (
+          <p className="bg-red-400">wrong item scanned</p>
+        ) : null}
       </form>
       <form onSubmit={(e) => handlePickingComplete(e)} noValidate>
         <h2>Items to pick</h2>
