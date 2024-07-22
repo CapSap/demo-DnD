@@ -17,6 +17,7 @@ export default function PickingList({
   );
   const [scanValue, setScanValue] = useState("");
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [wrong, setWrong] = useState(false);
 
   const [message, setMessage] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -31,9 +32,6 @@ export default function PickingList({
     console.time("find pronto sku");
 
     const index = barcodeData.findIndex((item) => item.code === scanValue);
-
-    console.log(index);
-    console.log(barcodeData[index]);
 
     if (index !== -1) {
       console.timeEnd("find pronto sku");
@@ -61,9 +59,11 @@ export default function PickingList({
 
       // handle no sku found
       if (index === -1) {
+        setWrong(true);
         return prev;
       }
 
+      setWrong(false);
       setScanValue("");
       setSubmitAttempted(false);
 
@@ -260,6 +260,7 @@ export default function PickingList({
           value={scanValue}
           onChange={(e) => setScanValue(e.target.value)}
         />
+        {wrong ? <p className="bg-red-400">wrong item scanned</p> : null}
       </form>
       <form onSubmit={(e) => handlePickingComplete(e)} noValidate>
         <h2>Items to pick</h2>

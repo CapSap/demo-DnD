@@ -8,8 +8,6 @@ export const revalidate = 0;
 export default async function DashboardPage() {
   const requests = await getStoreRequests();
 
-  console.log("testing does this run when naving to the page? ");
-
   /*
 
   const requests = await fetch("http://localhost:3000/api/db", {
