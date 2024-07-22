@@ -4,6 +4,7 @@ import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { RequestContext } from "./RequestContext";
 import { useRouter } from "next/navigation";
 import { IStoreRequest, Item } from "../types/types";
+import { barcodeData } from "../utils/barcode";
 
 export default function PickingList({
   updateManyStoreRequests,
@@ -26,15 +27,35 @@ export default function PickingList({
 
   const router = useRouter();
 
+  function findProntoSku(barcode: string): string {
+    console.time("find pronto sku");
+
+    const index = barcodeData.findIndex((item) => item.code === scanValue);
+
+    console.log(index);
+    console.log(barcodeData[index]);
+
+    if (index !== -1) {
+      console.timeEnd("find pronto sku");
+
+      return barcodeData[index].sku;
+    } else {
+      console.timeEnd("find pronto sku");
+
+      return barcode;
+    }
+  }
+
   function handleScan(e: FormEvent) {
     e.preventDefault();
+    const prontoSku = findProntoSku(scanValue);
 
     setOrdersBeingPicked((prev) => {
       // find the index of the order that has a sku that needs to be picked
       const index = prev.findIndex((order) => {
         return order.items.some(
           (item) =>
-            item.sku === scanValue && item.quantityPicked < item.quantity,
+            item.sku === prontoSku && item.quantityPicked < item.quantity,
         );
       });
 
@@ -48,7 +69,7 @@ export default function PickingList({
 
       // update the items
       const updatedItems = prev[index].items.map((item) => {
-        if (item.sku === scanValue && item.quantityPicked < item.quantity) {
+        if (item.sku === prontoSku && item.quantityPicked < item.quantity) {
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
