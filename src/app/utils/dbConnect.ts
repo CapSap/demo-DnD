@@ -113,7 +113,7 @@ export const updateManyStoreRequests = async (request: string) => {
   "use server";
   console.log("update many running...");
 
-  // after updating many requests, get data again on the dashboard route
+  // after updating many requests, get data again from db on the dashboard route
   revalidatePath("/dashboard");
 
   try {
