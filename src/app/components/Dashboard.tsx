@@ -29,9 +29,6 @@ export default function DashBoard({ requests }: { requests: IStoreRequest[] }) {
     router.push("/picking");
   }
 
-  console.log("testing state", selected);
-  console.log("testing context", _);
-
   return (
     <>
       <div>
