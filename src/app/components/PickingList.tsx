@@ -98,7 +98,6 @@ export default function PickingList({
   }
 
   async function handlePickingComplete(e: FormEvent) {
-    console.log("apply pick list clicked");
     setSubmitAttempted(true);
     e.preventDefault();
 
@@ -110,7 +109,6 @@ export default function PickingList({
     });
 
     // logic here to handle not ready
-    console.log(isALlPickingDone);
 
     if (isALlPickingDone) {
       // update fully fufilled requests
@@ -215,7 +213,6 @@ export default function PickingList({
   }
 
   function handleItemUnavaliablePress(index: number, sku: string) {
-    // mark the item requested as unavaliable so that the?
     setOrdersBeingPicked((prev) => {
       // update the items
       const updatedItems: Item[] = prev[index].items.map((item) => {
@@ -250,6 +247,13 @@ export default function PickingList({
     setSubmitAttempted(false);
   }
 
+  function handleClearPress() {
+    setScanValue("");
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }
+
   return (
     <div>
       <form onSubmit={(e) => handleScan(e)}>
@@ -260,6 +264,9 @@ export default function PickingList({
           value={scanValue}
           onChange={(e) => setScanValue(e.target.value)}
         />
+        <button type="button" onClick={handleClearPress}>
+          Clear
+        </button>
         {wrongItemScanned ? (
           <p className="bg-red-400">wrong item scanned</p>
         ) : null}
