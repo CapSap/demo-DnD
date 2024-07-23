@@ -1,14 +1,14 @@
-MVP document
-
-This document is a stripped down MVP version of this project
+This document is a stripped down MVP version
 
 # Demo-DnD
 
-An app to coordinate stock requests between retail stores
-
 ## Project Description
 
-This is a NextJS application aimed at
+An app to coordinate stock requests between retail stores. Discuss and dispatch (DnD) is a play on click and collect (CnC)
+
+## Tech
+
+This application uses NextJS and MongoDB.
 
 ### Challenges
 
