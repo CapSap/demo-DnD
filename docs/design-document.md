@@ -8,7 +8,7 @@ Draft doc
 # Stakeholders
 
 - General Manager - Improve the customer experience and reduce errors. Improve visibility and reporting
-- Seven Hills staff - Improve efficieny and reduce errors
+- Seven Hills staff - Improve efficiency and reduce errors
 - Customers - Reduce errors
 
 # User Stories
@@ -26,7 +26,7 @@ Draft doc
 - a seven hills person can scan barcodes to complete picking #19
 - a seven hills person can generate a shipping label from the app via details entered from staff person
 - a seven hills person can easily tell app which orders are being packed at once
-- a seven hills person can attatch 1 x tracking / ibt number to multiple requests
+- a seven hills person can attach 1 x tracking / ibt number to multiple requests
 - a seven hills person can mark an item oos
 - a seven hills person can securely log into app
 
