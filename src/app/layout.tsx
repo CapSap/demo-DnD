@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import RequestProvider from "./components/RequestContext";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +19,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <nav>
+          <ul className="flex flex-wrap bg-green-300">
+            <Link
+              href={"/dashboard"}
+              className="p-2 hover:bg-green-400 hover:font-bold active:bg-green-600"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href={"/create-request"}
+              className="p-2 hover:bg-green-400 hover:font-bold active:bg-green-600"
+            >
+              Create a new request
+            </Link>
+          </ul>
+        </nav>
         <RequestProvider>{children}</RequestProvider>
       </body>
     </html>
