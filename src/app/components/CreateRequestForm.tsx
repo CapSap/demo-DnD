@@ -209,7 +209,7 @@ export default function CreateRequestForm({
                 type="text"
                 name="sku"
                 id="sku"
-                value={items[i].sku}
+                value={item.sku}
                 onChange={(e) => handleItemChange(e, i)}
                 className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -218,7 +218,7 @@ export default function CreateRequestForm({
                 required={true}
                 name="description"
                 id="description"
-                value={items[i].description}
+                value={item.description}
                 onChange={(e) => handleItemChange(e, i)}
                 className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -229,7 +229,6 @@ export default function CreateRequestForm({
                 Remove item
               </button>
             </div>
-            <StockChecker sku={items[i].sku} />
             <StockChecker sku={item.sku} />
           </div>
         ))}
