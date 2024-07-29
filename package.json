@@ -10,6 +10,9 @@
     "format": "prettier . --write"
   },
   "dependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "better-sqlite3": "^11.1.2",
+    "csv-parser": "^3.0.0",
     "mongodb": "^6.6.1",
     "mongoose": "^8.3.5",
     "next": "14.2.3",
