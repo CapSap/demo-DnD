@@ -3,7 +3,7 @@ import fs from "fs";
 import csv from "csv-parser";
 import path from "path";
 
-export function initializeProntoData() {
+export async function initializeProntoData(): Promise<void> {
   const db = new Database("prontoData.db");
 
   // variable to count rows in the CSV file
@@ -29,7 +29,6 @@ export function initializeProntoData() {
     const row = db
       .prepare("SELECT COUNT(*) AS count FROM prontoData")
       .get() as RowCount;
-    console.log("this is a row", row);
     return row ? row.count : 0;
   };
 
@@ -44,7 +43,7 @@ export function initializeProntoData() {
   };
 
   // Start the check and initialization process
-  checkAndInitialize();
+  await checkAndInitialize();
 
   // Function to check and initialize the database
   async function checkAndInitialize() {
@@ -57,9 +56,6 @@ export function initializeProntoData() {
 
       const csvRowCount = await countCSVRows();
       const dbRowCount = countDBRows();
-
-      console.log(`CSV Row Count: ${csvRowCount}`);
-      console.log(`DB Row Count: ${dbRowCount}`);
 
       if (csvRowCount !== dbRowCount) {
         console.log("Row counts differ. Recreating the database...");
@@ -75,7 +71,7 @@ export function initializeProntoData() {
   }
 
   // helper function to recreate the database
-  async function recreateDatabase() {
+  async function recreateDatabase(): Promise<void> {
     // Drop the existing table if it exists
     db.prepare("DROP TABLE IF EXISTS prontoData").run();
 
@@ -105,15 +101,15 @@ export function initializeProntoData() {
     const insertMany = db.transaction((rows) => {
       for (const row of rows) {
         insert.run(
-          row.ItemCode,
+          row["Item Code"],
           row.GTIN,
           row.Style,
           row.Colour,
           row.Size,
           row.Gender,
-          row.ItemCategoryCode,
-          row.ItemClassCode,
-          row.ABCClass,
+          row["Item Category Code"],
+          row["Item Class Code"],
+          row["ABC Class"],
           row.Brand,
         );
       }
@@ -125,15 +121,24 @@ export function initializeProntoData() {
       process.cwd(),
       "src/app/api/prontoDatabase/pronto-database.csv",
     );
-    fs.createReadStream(csvFilePath)
-      .pipe(csv())
-      .on("data", (data) => results.push(data))
-      .on("end", () => {
-        insertMany(results);
-        console.log(
-          "CSV file successfully processed and data inserted into the database.",
-        );
-        db.close();
-      });
+
+    return new Promise<void>((resolve, reject) => {
+      fs.createReadStream(csvFilePath)
+        .pipe(csv())
+        .on("data", (data) => results.push(data))
+        .on("end", () => {
+          insertMany(results);
+          console.log(
+            "CSV file successfully processed and data inserted into the database.",
+          );
+          db.close();
+          resolve();
+        })
+        .on("error", (error) => {
+          console.error("Error reading CSV file:", error);
+          db.close();
+          reject(error);
+        });
+    });
   }
 }
