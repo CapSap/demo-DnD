@@ -24,6 +24,8 @@ export default function CreateRequestForm({
 
   const [loading, setLoading] = useState(false);
 
+  const [search, setSearch] = useState("");
+
   function handleGetMoreItems() {
     setItems((prevState) => {
       return [
@@ -39,6 +41,7 @@ export default function CreateRequestForm({
   }
 
   async function handleFormSubmit() {
+    console.log("form submit running");
     if (requestingStore === "default") {
       handleSubmitWithDefaultLocation();
       return;
@@ -96,6 +99,20 @@ export default function CreateRequestForm({
       selectInput.current.focus();
     }
   }
+
+  async function handleSearch() {
+    console.log("handle search running");
+    // take in user input
+    // hit api
+    const results = await fetch(
+      `localhost:3000/api/prontoDatabase?search=${search}`,
+    );
+
+    console.log(results);
+    // display a dropdown array for user to pick?
+    // if no results, show something useful to the user
+  }
+
   return (
     <div className="flex flex-col items-center">
       <form
@@ -189,6 +206,27 @@ export default function CreateRequestForm({
             Get more requests
           </button>
         </div>
+
+        <div className="border-2 border-green-300">
+          <label htmlFor="scanBox">Scan or search for skus here</label>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          {/* i shbould spend more time thinking about what exact behaviour do i want?
+          user can search for skus via text or barcode.
+
+          user can type or scan a barcode
+
+          press an enter button
+
+          (then what should happen)
+          
+          */}
+        </div>
+
         {items.map((item, i) => (
           <div key={"item" + i} className="mb-10 grid grid-cols-2">
             <div key={"item" + i} className="flex flex-col">
