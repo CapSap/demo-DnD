@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { initializeProntoData } from "@/app/utils/initProntoDatabase";
-import { exactSearch } from "@/app/utils/query";
+import { exactSearch, likeSearch } from "@/app/utils/query";
 
 export async function GET(request: NextRequest) {
   console.time("pronto data route");
@@ -14,8 +14,10 @@ export async function GET(request: NextRequest) {
   const searchString = searchParams.get("search") || "";
 
   // Call the query function
-  const results = exactSearch(searchString);
+  const exactResults = exactSearch(searchString);
+
+  const likeResults = likeSearch(searchString);
 
   console.timeEnd("pronto data route");
-  return NextResponse.json({ results });
+  return NextResponse.json({ exactResults, likeResults });
 }
