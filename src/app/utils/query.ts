@@ -15,12 +15,12 @@ type ProntoData = {
 };
 
 export function exactSearch(searchString: string) {
-  console.log("query func running");
+  console.log("exact search func running");
 
   const db = new Database("prontoData.db");
 
   const sanityCheckows = db.prepare("SELECT * FROM prontoData LIMIT 1").all();
-  console.log("Database Records:", sanityCheckows);
+  // console.log("Database Records:", sanityCheckows);
 
   const statement = db.prepare(`
     SELECT ItemCode, Style, Colour, Size, Gender 
@@ -38,20 +38,44 @@ export function exactSearch(searchString: string) {
 }
 
 export function likeSearch(searchString: string) {
+  console.log("like func running");
   const db = new Database("prontoData.db");
 
-  // Prepare the SQL query
+  db.exec(`DROP TABLE IF EXISTS prontoData_fts;`);
+
+  // Create the FTS5 virtual table if it doesn't already exist
+  db.exec(`
+  CREATE VIRTUAL TABLE IF NOT EXISTS prontoData_fts
+  USING fts5(
+   combined 
+  );
+`);
+
+  db.exec(`DELETE FROM prontoData_fts;`);
+
+  db.exec(`
+  INSERT INTO prontoData_fts (combined)
+  SELECT Style || ' ' || Colour || ' ' || Size || ' ' || Gender
+  FROM prontoData;
+`);
+
+  // Check if the FTS table contains data
+  const checkStatement = db.prepare(
+    `SELECT combined FROM prontoData_fts LIMIT 10 `,
+  );
+  const checkRows = checkStatement.all();
+  console.log("FTS Data:", checkRows);
+
+  // Perform a full-text search using the FTS5 table
   const statement = db.prepare(`
-      SELECT *
-      FROM prontoData
-      WHERE ItemCode LIKE ? OR GTIN LIKE ?
-    `);
+    SELECT combined
+    FROM prontoData_fts
+    WHERE combined MATCH ?
+    LIMIT 10
+  `);
 
   // Execute the query with the search string
-  const rows = statement.all(
-    `%${searchString}%`,
-    `%${searchString}%`,
-  ) as ProntoData[];
+  const rows = statement.all(`"${searchString}"`) as ProntoData[];
 
   db.close();
   return rows;
