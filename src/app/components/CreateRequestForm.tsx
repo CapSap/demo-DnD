@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Item, IPartialStoreRequest, PartialItem } from "../types/types";
 import StockChecker from "./StockChecker";
 
@@ -24,7 +24,8 @@ export default function CreateRequestForm({
 
   const [loading, setLoading] = useState(false);
 
-  const [search, setSearch] = useState("");
+  const [producSearch, setProductSearch] = useState("");
+  const [products, setProducts] = useState({});
 
   function handleGetMoreItems() {
     setItems((prevState) => {
@@ -101,17 +102,24 @@ export default function CreateRequestForm({
   }
 
   async function handleSearch() {
+    if (!producSearch) {
+      return;
+    }
     console.log("handle search running");
     // take in user input
     // hit api
-    const results = await fetch(
-      `localhost:3000/api/prontoDatabase?search=${search}`,
-    );
+    const response = await fetch(`/api/prontoDatabase?search=${producSearch}`);
+    const results = await response.json();
 
-    console.log(results);
-    // display a dropdown array for user to pick?
-    // if no results, show something useful to the user
+    console.log("results", results);
+
+    return results;
   }
+
+  useEffect(() => {
+    const searchResults = handleSearch();
+    setProducts(searchResults);
+  }, [producSearch]);
 
   return (
     <div className="flex flex-col items-center">
@@ -211,8 +219,8 @@ export default function CreateRequestForm({
           <label htmlFor="scanBox">Scan or search for skus here</label>
           <input
             type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={producSearch}
+            onChange={(e) => setProductSearch(e.target.value)}
           />
 
           {/* i shbould spend more time thinking about what exact behaviour do i want?
