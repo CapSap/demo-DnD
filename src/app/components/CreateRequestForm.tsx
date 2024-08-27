@@ -117,8 +117,10 @@ export default function CreateRequestForm({
   }
 
   useEffect(() => {
-    const searchResults = handleSearch();
-    setProducts(searchResults);
+    if (producSearch.length > 4) {
+      const searchResults = handleSearch();
+      setProducts(searchResults);
+    }
   }, [producSearch]);
 
   return (
@@ -222,6 +224,14 @@ export default function CreateRequestForm({
             value={producSearch}
             onChange={(e) => setProductSearch(e.target.value)}
           />
+          <select name="products">
+            <option>Test option</option>
+            <option>Test option2</option>
+            {products.likeResults &&
+              products.likeResults.map((item) => (
+                <option key={item.ItemCode}>{item.Style}</option>
+              ))}
+          </select>
 
           {/* i shbould spend more time thinking about what exact behaviour do i want?
           user can search for skus via text or barcode.
