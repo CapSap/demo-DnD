@@ -67,17 +67,18 @@ export function likeSearch(searchString: string) {
   console.log("FTS Data:", checkRows);
 
   const statement = db.prepare(`
-  SELECT combined
+  SELECT combined, bm25(prontoData_fts) as rank
   FROM prontoData_fts
   WHERE combined MATCH ?
+  ORDER BY rank
   LIMIT 10
 `);
   // remove spaces, add wildcard
   const formattedSearchString = searchString
-    .split(" ")
-    .map((term) => `${term.trim()}*`)
-    .filter((term) => term.length > 0)
-    .join(" ");
+    .split(/\s+/) // Split by one or more spaces
+    .filter((term) => term.trim() !== "") // Filter out empty terms
+    .map((term) => `${term.trim()}*`) // Add the wildcard operator
+    .join(" "); // Join terms with a single space
 
   console.log("formatted", formattedSearchString);
 
