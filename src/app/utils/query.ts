@@ -47,28 +47,28 @@ export function likeSearch(searchString: string) {
   db.exec(`
   CREATE VIRTUAL TABLE IF NOT EXISTS prontoData_fts
   USING fts5(
-   combined 
+   combined,
+   item_code UNINDEXED
   );
 `);
 
   db.exec(`DELETE FROM prontoData_fts;`);
 
   db.exec(`
-  INSERT INTO prontoData_fts (combined)
-  SELECT Style || ' ' || Colour || ' ' || Size || ' ' || Gender
+  INSERT INTO prontoData_fts (combined, item_code)
+  SELECT Style || ' ' || Colour || ' ' || Size || ' ' || Gender, ItemCode
   FROM prontoData;
 `);
 
   // Check if the FTS table contains data
-  const checkStatement = db.prepare(
-    `SELECT combined FROM prontoData_fts LIMIT 10 `,
-  );
+  const checkStatement = db.prepare(`SELECT * FROM prontoData_fts LIMIT 10 `);
   const checkRows = checkStatement.all();
   console.log("FTS Data:", checkRows);
 
   const statement = db.prepare(`
-  SELECT combined, bm25(prontoData_fts) as rank
+  SELECT prontoData.Style, prontoData.colour, prontoData.Size, prontoData.Gender, prontoData.ItemCode, combined, bm25(prontoData_fts) as rank
   FROM prontoData_fts
+  JOIN prontoData on prontoData.ItemCode = prontoData_fts.item_code
   WHERE combined MATCH ?
   ORDER BY rank
   LIMIT 10
