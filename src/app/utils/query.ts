@@ -66,16 +66,23 @@ export function likeSearch(searchString: string) {
   const checkRows = checkStatement.all();
   console.log("FTS Data:", checkRows);
 
-  // Perform a full-text search using the FTS5 table
   const statement = db.prepare(`
-    SELECT combined
-    FROM prontoData_fts
-    WHERE combined MATCH ?
-    LIMIT 10
-  `);
+  SELECT combined
+  FROM prontoData_fts
+  WHERE combined MATCH ?
+  LIMIT 10
+`);
+  // remove spaces, add wildcard
+  const formattedSearchString = searchString
+    .split(" ")
+    .map((term) => `${term.trim()}*`)
+    .filter((term) => term.length > 0)
+    .join(" ");
 
-  // Execute the query with the search string
-  const rows = statement.all(`"${searchString}"`) as ProntoData[];
+  console.log("formatted", formattedSearchString);
+
+  // Execute the query with the formatted search string
+  const rows = statement.all(`${formattedSearchString}`) as ProntoData[];
 
   db.close();
   return rows;
