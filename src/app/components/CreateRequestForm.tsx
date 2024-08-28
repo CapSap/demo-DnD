@@ -326,17 +326,6 @@ export default function CreateRequestForm({
               ))}
           </select>
           <button onClick={(e) => handleAddProduct(e)}>Populate below</button>
-
-          {/* i shbould spend more time thinking about what exact behaviour do i want?
-          user can search for skus via text or barcode.
-
-          user can type or scan a barcode
-
-          press an enter button
-
-          (then what should happen)
-          
-          */}
         </div>
 
         {items.map((item, i) => (
