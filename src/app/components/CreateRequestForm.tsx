@@ -275,10 +275,20 @@ export default function CreateRequestForm({
             value={productSearch}
             onChange={(e) => setProductSearch(e.target.value)}
           />
-          <select name="products">
+          <select
+            name="products"
+            onChange={(e) => {
+              setSelectedProductID(e.target.selectedOptions[0].id);
+            }}
+            value={selectedProductID}
+          >
             {products.likeResults &&
               products.likeResults.map((item) => (
-                <option key={item.ItemCode}>
+                <option
+                  key={item.ItemCode}
+                  id={item.ItemCode}
+                  value={item.ItemCode}
+                >
                   {item.Style} {item.Colour} {item.Size} - {item.ItemCode}
                 </option>
               ))}
