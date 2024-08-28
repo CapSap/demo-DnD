@@ -135,6 +135,17 @@ export default function CreateRequestForm({
 
     console.log("results", results);
     setProducts(results);
+
+    const firstResult =
+      (results.exactResults &&
+        results.exactResults.length > 0 &&
+        results.exactResults[0].ItemCode) ||
+      (results.likeResults &&
+        results.likeResults.length > 0 &&
+        results.likeResults[0].ItemCode);
+
+    // set the value to first results from search
+    setSelectedProductID(firstResult);
   }
 
   function handleAddProduct(e: React.MouseEvent<HTMLButtonElement>) {
