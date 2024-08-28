@@ -24,8 +24,12 @@ export default function CreateRequestForm({
 
   const [loading, setLoading] = useState(false);
 
-  const [producSearch, setProductSearch] = useState("");
-  const [products, setProducts] = useState({});
+  const [productSearch, setProductSearch] = useState("");
+  const [products, setProducts] = useState({
+    exactResults: [],
+    likeResults: [],
+  });
+  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function handleGetMoreItems() {
     setItems((prevState) => {
@@ -101,27 +105,48 @@ export default function CreateRequestForm({
     }
   }
 
-  async function handleSearch() {
-    if (!producSearch) {
+  async function handleSearch(searchString: string) {
+    if (!productSearch) {
       return;
     }
-    console.log("handle search running");
-    // take in user input
-    // hit api
-    const response = await fetch(`/api/prontoDatabase?search=${producSearch}`);
-    const results = await response.json();
 
-    console.log("results", results);
+    console.log("handle search hitting timeout");
 
-    return results;
+    setTimeout(async () => {
+      console.log("handle search searching..");
+
+      // take in user input
+      // hit api
+      const response = await fetch(
+        `/api/prontoDatabase?search=${searchString}`,
+      );
+      const results = await response.json();
+
+      console.log("results", results);
+      setProducts(results);
+    }, 1000);
   }
 
   useEffect(() => {
-    if (producSearch.length > 4) {
-      const searchResults = handleSearch();
-      setProducts(searchResults);
+    // Clear the previous timeout if the user types again within the delay
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
-  }, [producSearch]);
+
+    // Set a new timeout to run the search after a delay (e.g., 500ms)
+    debounceTimeout.current = setTimeout(() => {
+      if (productSearch.length > 5) {
+        handleSearch(productSearch);
+      }
+    }, 300);
+
+    // Cleanup function to clear the timeout if the component unmounts
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, [productSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="flex flex-col items-center">
@@ -221,17 +246,18 @@ export default function CreateRequestForm({
           <label htmlFor="scanBox">Scan or search for skus here</label>
           <input
             type="text"
-            value={producSearch}
+            value={productSearch}
             onChange={(e) => setProductSearch(e.target.value)}
           />
           <select name="products">
-            <option>Test option</option>
-            <option>Test option2</option>
             {products.likeResults &&
               products.likeResults.map((item) => (
-                <option key={item.ItemCode}>{item.Style}</option>
+                <option key={item.ItemCode}>
+                  {item.Style} {item.Colour} {item.Size} - {item.ItemCode}
+                </option>
               ))}
           </select>
+          <button>Populate below</button>
 
           {/* i shbould spend more time thinking about what exact behaviour do i want?
           user can search for skus via text or barcode.
