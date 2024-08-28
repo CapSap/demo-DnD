@@ -24,8 +24,26 @@ export default function CreateRequestForm({
 
   const [loading, setLoading] = useState(false);
 
+  type SearchResults = {
+    exactResults: {
+      Style: string;
+      Colour: string;
+      Gender: string;
+      ItemCode: string;
+      Size: string;
+    }[];
+    likeResults: {
+      Style: string;
+      Colour: string;
+      Gender: string;
+      ItemCode: string;
+      Size: string;
+      rank: number;
+    }[];
+  };
+
   const [productSearch, setProductSearch] = useState("");
-  const [products, setProducts] = useState({
+  const [products, setProducts] = useState<SearchResults>({
     exactResults: [],
     likeResults: [],
   });
