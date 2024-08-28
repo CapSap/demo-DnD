@@ -21,7 +21,6 @@ export default function CreateRequestForm({
   ]);
 
   const [message, setMessage] = useState("");
-
   const [loading, setLoading] = useState(false);
 
   type SearchResults = {
@@ -127,27 +126,31 @@ export default function CreateRequestForm({
     if (!productSearch) {
       return;
     }
+    console.log("handle search searching..");
 
-    console.log("handle search hitting timeout");
+    // take in user input
+    // hit api
+    const response = await fetch(`/api/prontoDatabase?search=${searchString}`);
+    const results = await response.json();
 
-    setTimeout(async () => {
-      console.log("handle search searching..");
-
-      // take in user input
-      // hit api
-      const response = await fetch(
-        `/api/prontoDatabase?search=${searchString}`,
-      );
-      const results = await response.json();
-
-      console.log("results", results);
-      setProducts(results);
-    }, 1000);
+    console.log("results", results);
+    setProducts(results);
   }
 
   function handleAddProduct(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     console.log("button clicked");
+    setItems((prevState) => {
+      return [
+        ...prevState,
+        {
+          tempID: Date.now(),
+          sku: "ASd",
+          quantity: "1",
+          description: "",
+        },
+      ];
+    });
   }
 
   useEffect(() => {
@@ -161,7 +164,7 @@ export default function CreateRequestForm({
       if (productSearch.length > 5) {
         handleSearch(productSearch);
       }
-    }, 300);
+    }, 500);
 
     // Cleanup function to clear the timeout if the component unmounts
     return () => {
