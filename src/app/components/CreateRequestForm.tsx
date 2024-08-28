@@ -46,6 +46,9 @@ export default function CreateRequestForm({
     exactResults: [],
     likeResults: [],
   });
+
+  const [selectedProductID, setSelectedProductID] = useState<string>();
+
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function handleGetMoreItems() {
@@ -150,15 +153,33 @@ export default function CreateRequestForm({
 
   function handleAddProduct(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
-    console.log("button clicked");
+    console.log("button clicked", selectedProductID);
+
+    const seletecedExact = products.exactResults.find(
+      (product) => product.ItemCode === selectedProductID,
+    );
+
+    const selectedLike = products.likeResults.find(
+      (product) => product.ItemCode === selectedProductID,
+    );
+
+    const final = seletecedExact || selectedLike;
+
+    if (!final) {
+      return;
+    }
+
+    console.log("final", final);
+    // find the object via ID, and then add it to state.
+
     setItems((prevState) => {
       return [
         ...prevState,
         {
           tempID: Date.now(),
-          sku: "ASd",
+          sku: final.ItemCode,
           quantity: "1",
-          description: "",
+          description: `${final.Style} ${final.Colour} ${final.Size}`,
         },
       ];
     });
