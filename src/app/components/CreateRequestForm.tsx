@@ -145,6 +145,11 @@ export default function CreateRequestForm({
     }, 1000);
   }
 
+  function handleAddProduct(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    console.log("button clicked");
+  }
+
   useEffect(() => {
     // Clear the previous timeout if the user types again within the delay
     if (debounceTimeout.current) {
@@ -275,7 +280,7 @@ export default function CreateRequestForm({
                 </option>
               ))}
           </select>
-          <button>Populate below</button>
+          <button onClick={(e) => handleAddProduct(e)}>Populate below</button>
 
           {/* i shbould spend more time thinking about what exact behaviour do i want?
           user can search for skus via text or barcode.
