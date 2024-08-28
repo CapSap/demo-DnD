@@ -37,3 +37,7 @@ next-env.d.ts
 
 # design folder that has many images
 */design
+
+# database files
+*.db
+*.csv

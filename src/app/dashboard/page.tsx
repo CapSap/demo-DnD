@@ -1,12 +1,14 @@
 import Link from "next/link";
 import DashBoard from "../components/Dashboard";
 import { getStoreRequests } from "../utils/dbConnect";
+import { initializeProntoData } from "../utils/initProntoDatabase";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function DashboardPage() {
   const requests = await getStoreRequests();
+  initializeProntoData();
 
   /*
 

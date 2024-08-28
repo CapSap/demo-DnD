@@ -10,6 +10,11 @@ An app to coordinate stock requests between retail stores. Discuss and dispatch 
 
 This application uses NextJS and MongoDB.
 
+## Dev Setup
+
+- npm install
+- Need to have a pronto-database.csv file in the /api/prontoDatabase folder
+
 ### Challenges
 
 This has been attempt number 6 to build this project. The requirements have changed slightly due to some evolution at the stores- I can take advantage of mobile scanners that are running android. Burnout is the thing to avoid so keeping the scope small and focused is key.
