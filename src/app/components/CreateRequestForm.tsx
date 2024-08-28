@@ -17,7 +17,7 @@ export default function CreateRequestForm({
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [items, setItems] = useState<PartialItem[]>([
-    { tempID: Date.now(), quantity: "1", sku: "", description: "" },
+    // { tempID: Date.now(), quantity: "1", sku: "", description: "" },
   ]);
 
   const [message, setMessage] = useState("");
@@ -342,49 +342,51 @@ export default function CreateRequestForm({
           </div>
         </div>
 
-        {items.map((item, i) => (
-          <div key={"item" + i} className="mb-10 grid grid-cols-2">
-            <div key={"item" + i} className="flex flex-col">
-              <p>Item #{i + 1}</p>
-              <label htmlFor="quantity">Quantity </label>
-              <input
-                type="number"
-                min={1}
-                name="quantity"
-                id="quantity"
-                value={item.quantity}
-                onChange={(e) => handleItemChange(e, i)}
-                className="rounded-md border-0 p-2.5 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-              <label htmlFor="sku">SKU </label>
-              <input
-                required={true}
-                type="text"
-                name="sku"
-                id="sku"
-                value={item.sku}
-                onChange={(e) => handleItemChange(e, i)}
-                className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-              <label htmlFor="decription">Description</label>
-              <textarea
-                required={true}
-                name="description"
-                id="description"
-                value={item.description}
-                onChange={(e) => handleItemChange(e, i)}
-                className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-              <button
-                className="m-2 w-1/2 rounded-md bg-yellow-200 px-3 py-1"
-                onClick={(e) => removeSingleItem(e, item)}
-              >
-                Remove item
-              </button>
-            </div>
-            <StockChecker sku={item.sku} />
-          </div>
-        ))}
+        {items.length > 0
+          ? items.map((item, i) => (
+              <div key={"item" + i} className="mb-10 grid grid-cols-2">
+                <div key={"item" + i} className="flex flex-col">
+                  <p>Item #{i + 1}</p>
+                  <label htmlFor="quantity">Quantity </label>
+                  <input
+                    type="number"
+                    min={1}
+                    name="quantity"
+                    id="quantity"
+                    value={item.quantity}
+                    onChange={(e) => handleItemChange(e, i)}
+                    className="rounded-md border-0 p-2.5 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                  <label htmlFor="sku">SKU </label>
+                  <input
+                    required={true}
+                    type="text"
+                    name="sku"
+                    id="sku"
+                    value={item.sku}
+                    onChange={(e) => handleItemChange(e, i)}
+                    className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                  <label htmlFor="decription">Description</label>
+                  <textarea
+                    required={true}
+                    name="description"
+                    id="description"
+                    value={item.description}
+                    onChange={(e) => handleItemChange(e, i)}
+                    className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                  <button
+                    className="m-2 w-1/2 rounded-md bg-yellow-200 px-3 py-1"
+                    onClick={(e) => removeSingleItem(e, item)}
+                  >
+                    Remove item
+                  </button>
+                </div>
+                <StockChecker sku={item.sku} />
+              </div>
+            ))
+          : 'Search for some skus to add items, or add them manually via the "Add a request below" button'}
         <div className="flex flex-col items-center justify-center md:col-span-2">
           <button
             type="submit"
