@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import { RequestContext } from "./RequestContext";
 import { useRouter } from "next/navigation";
 import { IStoreRequest } from "../types/types";
+import RequestUpdateCard from "./RequestUpdateCard";
 
 export default function DashBoard({ requests }: { requests: IStoreRequest[] }) {
   const [selected, setSelected] = useState<IStoreRequest[]>([]);
@@ -37,20 +38,38 @@ export default function DashBoard({ requests }: { requests: IStoreRequest[] }) {
         </button>
       </div>
       <div>
-        <h2>All orders</h2>
+        <h2>Orders TODO</h2>
         <div className="m-10 flex flex-wrap gap-4">
           {requests &&
-            requests.map((request) => (
-              <RequestCard
-                key={request._id}
-                request={request}
-                handleSelect={handleSelect}
-              />
-            ))}
+            requests
+              .filter(
+                (request) =>
+                  request.status === "issue picking" ||
+                  request.status === "new",
+              )
+              .map((request) => (
+                <RequestCard
+                  key={request._id}
+                  request={request}
+                  handleSelect={handleSelect}
+                />
+              ))}
         </div>
       </div>
       <div>
-        <h2>Orders ready to post</h2>
+        <h2>Orders finished picking</h2>
+        <div className="m-10 flex flex-wrap gap-4">
+          {requests &&
+            requests
+              .filter((request) => request.status === "ready to post")
+              .map((request) => (
+                <RequestUpdateCard
+                  key={request._id}
+                  request={request}
+                  handleSelect={handleSelect}
+                />
+              ))}
+        </div>
       </div>
     </>
   );
