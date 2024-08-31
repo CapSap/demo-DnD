@@ -33,6 +33,8 @@ export type IStoreRequest = {
   address: string;
   items: Item[];
   status: "new" | "issue picking" | "ready to post";
+  ibt: string;
+  tracking: string;
 };
 
 export type IPartialStoreRequest = Partial<
