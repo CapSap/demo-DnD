@@ -6,7 +6,13 @@ import { useRouter } from "next/navigation";
 import { IStoreRequest } from "../types/types";
 import RequestUpdateCard from "./RequestUpdateCard";
 
-export default function DashBoard({ requests }: { requests: IStoreRequest[] }) {
+export default function DashBoard({
+  requests,
+  updateOneStoreRequest,
+}: {
+  requests: IStoreRequest[];
+  updateOneStoreRequest: (request: string) => Promise<string>;
+}) {
   const [selected, setSelected] = useState<IStoreRequest[]>([]);
   const [_, setRequests] = useContext(RequestContext);
 
@@ -67,6 +73,7 @@ export default function DashBoard({ requests }: { requests: IStoreRequest[] }) {
                   key={request._id}
                   request={request}
                   handleSelect={handleSelect}
+                  updateOneStoreRequest={updateOneStoreRequest}
                 />
               ))}
         </div>
