@@ -14,7 +14,7 @@ export default function RequestCard({
   return (
     <div
       id={request._id}
-      className="m-2 min-w-72 justify-center border-2 border-slate-400 p-2"
+      className="m-2 min-w-96 justify-center border-2 border-slate-400 p-2"
     >
       <div className="rounded-lg bg-pink-200 hover:bg-pink-300 active:bg-pink-400">
         <input
@@ -41,7 +41,7 @@ export default function RequestCard({
               {item.quantity} x {item.sku}
             </p>
             <p>{item.description}</p>
-            <p>qty picked: {item.quantityPicked}</p>
+            <p>Qty picked: {item.quantityPicked}</p>
           </li>
         ))}
       </ul>
