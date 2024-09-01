@@ -37,36 +37,47 @@ export default function DashBoard({
     router.push("/picking");
   }
 
+  const requestsTodo = requests.filter(
+    (request) => request.status === "issue picking" || request.status === "new",
+  );
+
+  console.log(
+    "this is the filteres todos",
+    Boolean(requestsTodo),
+    requestsTodo,
+  );
+
   return (
     <>
       <div>
-        <button
-          onClick={() => handleButtonClick()}
-          className="rounded-lg bg-pink-400 px-6 py-2 text-center text-sm font-semibold outline-none ring-pink-300 transition duration-100 hover:bg-pink-500 focus-visible:ring active:bg-pink-700 md:text-base"
-        >
-          Go to picking page with your selected requests (Tick the requests that
-          you want to pick)
-        </button>
+        {requestsTodo.length > 0 ? (
+          <button
+            onClick={() => handleButtonClick()}
+            className="rounded-lg bg-pink-400 px-6 py-2 text-center text-sm font-semibold outline-none ring-pink-300 transition duration-100 hover:bg-pink-500 focus-visible:ring active:bg-pink-700 md:text-base"
+          >
+            Go to picking page with your selected requests (Tick the requests
+            that you want to pick)
+          </button>
+        ) : null}
       </div>
       <div>
         <h2 className="text-base font-semibold leading-7 text-gray-900">
           Orders TODO
         </h2>
         <div className="flex flex-wrap gap-4">
-          {requests &&
-            requests
-              .filter(
-                (request) =>
-                  request.status === "issue picking" ||
-                  request.status === "new",
-              )
-              .map((request) => (
-                <RequestCard
-                  key={request._id}
-                  request={request}
-                  handleSelect={handleSelect}
-                />
-              ))}
+          {requestsTodo.length > 0 ? (
+            requestsTodo.map((request) => (
+              <RequestCard
+                key={request._id}
+                request={request}
+                handleSelect={handleSelect}
+              />
+            ))
+          ) : (
+            <div className="flex w-full justify-center bg-gray-300 p-5">
+              <p className="">There are no requests to pick!</p>
+            </div>
+          )}
         </div>
       </div>
       <div>
