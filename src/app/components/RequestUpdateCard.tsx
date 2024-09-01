@@ -18,7 +18,19 @@ export default function RequestUpdateCard({
     request.tracking,
   );
 
+  const [ibtError, setIbtError] = useState<string | null>(null);
+
   async function handleUpdate() {
+    console.log("does ibt pass the test? ", ibt && /^d{7}$/.test(ibt));
+
+    if (ibt && !/^\d{7}$/.test(ibt)) {
+      setIbtError("IBT must be a 7-digit number.");
+      return;
+    }
+
+    console.log("does this run");
+    setIbtError(null);
+
     try {
       const payload = JSON.stringify({ ...request, ibt, tracking });
       const result = await updateOneStoreRequest(payload);
@@ -110,6 +122,11 @@ export default function RequestUpdateCard({
           </p>
         </div>
       ) : null}
+      {ibtError && (
+        <div className="m-2 text-red-500">
+          <p>{ibtError}</p>
+        </div>
+      )}
       <button
         className="rounded-lg bg-indigo-400 px-6 py-2 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-500 focus-visible:ring active:bg-indigo-700 md:text-base"
         onClick={handleUpdate}
