@@ -37,20 +37,24 @@ export default function DashBoard({
     router.push("/picking");
   }
 
-  const requestsTodo = requests.filter(
+  const requestsToPick = requests.filter(
     (request) => request.status === "issue picking" || request.status === "new",
+  );
+
+  const requestsToPost = requests.filter(
+    (request) => request.status === "ready to post",
   );
 
   console.log(
     "this is the filteres todos",
-    Boolean(requestsTodo),
-    requestsTodo,
+    Boolean(requestsToPick),
+    requestsToPick,
   );
 
   return (
     <>
       <div>
-        {requestsTodo.length > 0 ? (
+        {requestsToPick.length > 0 ? (
           <button
             onClick={() => handleButtonClick()}
             className="rounded-lg bg-pink-400 px-6 py-2 text-center text-sm font-semibold outline-none ring-pink-300 transition duration-100 hover:bg-pink-500 focus-visible:ring active:bg-pink-700 md:text-base"
@@ -65,8 +69,8 @@ export default function DashBoard({
           Orders TODO
         </h2>
         <div className="flex flex-wrap gap-4">
-          {requestsTodo.length > 0 ? (
-            requestsTodo.map((request) => (
+          {requestsToPick.length > 0 ? (
+            requestsToPick.map((request) => (
               <RequestCard
                 key={request._id}
                 request={request}
@@ -85,17 +89,20 @@ export default function DashBoard({
           Orders finished picking and ready for IBT + posting out
         </h2>
         <div className="flex flex-wrap gap-2">
-          {requests &&
-            requests
-              .filter((request) => request.status === "ready to post")
-              .map((request) => (
-                <RequestUpdateCard
-                  key={request._id}
-                  request={request}
-                  handleSelect={handleSelect}
-                  updateOneStoreRequest={updateOneStoreRequest}
-                />
-              ))}
+          {requestsToPost.length > 0 ? (
+            requestsToPost.map((request) => (
+              <RequestUpdateCard
+                key={request._id}
+                request={request}
+                handleSelect={handleSelect}
+                updateOneStoreRequest={updateOneStoreRequest}
+              />
+            ))
+          ) : (
+            <div className="flex w-full justify-center bg-gray-300 p-5">
+              <p className="">There are no requests to post out!</p>
+            </div>
+          )}
         </div>
       </div>
       <div>
