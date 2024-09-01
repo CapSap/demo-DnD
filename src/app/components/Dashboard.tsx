@@ -5,6 +5,7 @@ import { RequestContext } from "./RequestContext";
 import { useRouter } from "next/navigation";
 import { IStoreRequest } from "../types/types";
 import RequestUpdateCard from "./RequestUpdateCard";
+import RequestCardArchived from "./RequestCardArchived";
 
 export default function DashBoard({
   requests,
@@ -39,13 +40,19 @@ export default function DashBoard({
   return (
     <>
       <div>
-        <button onClick={() => handleButtonClick()}>
-          click me to start picking
+        <button
+          onClick={() => handleButtonClick()}
+          className="rounded-lg bg-pink-400 px-6 py-2 text-center text-sm font-semibold outline-none ring-pink-300 transition duration-100 hover:bg-pink-500 focus-visible:ring active:bg-pink-700 md:text-base"
+        >
+          Go to picking page with your selected requests (Tick the requests that
+          you want to pick)
         </button>
       </div>
       <div>
-        <h2>Orders TODO</h2>
-        <div className="m-10 flex flex-wrap gap-4">
+        <h2 className="text-base font-semibold leading-7 text-gray-900">
+          Orders TODO
+        </h2>
+        <div className="flex flex-wrap gap-4">
           {requests &&
             requests
               .filter(
@@ -63,8 +70,10 @@ export default function DashBoard({
         </div>
       </div>
       <div>
-        <h2>Orders finished picking</h2>
-        <div className="m-10 flex flex-wrap gap-4">
+        <h2 className="mt-10 text-base font-semibold leading-7 text-gray-900">
+          Orders finished picking and ready for IBT + posting out
+        </h2>
+        <div className="flex flex-wrap gap-2">
           {requests &&
             requests
               .filter((request) => request.status === "ready to post")
@@ -75,6 +84,19 @@ export default function DashBoard({
                   handleSelect={handleSelect}
                   updateOneStoreRequest={updateOneStoreRequest}
                 />
+              ))}
+        </div>
+      </div>
+      <div>
+        <h2 className="mt-10 text-base font-semibold leading-7 text-gray-900">
+          Archived Orders / things already posted
+        </h2>
+        <div className="flex flex-wrap gap-2">
+          {requests &&
+            requests
+              .filter((request) => request.status === "posted")
+              .map((request) => (
+                <RequestCardArchived key={request._id} request={request} />
               ))}
         </div>
       </div>
