@@ -32,9 +32,10 @@ export type IStoreRequest = {
   email: string;
   address: string;
   items: Item[];
-  status: "new" | "issue picking" | "ready to post";
+  status: "new" | "issue picking" | "ready to post" | "posted";
   ibt: string;
   tracking: string;
+  updatedAt: string;
 };
 
 export type IPartialStoreRequest = Partial<
