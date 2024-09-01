@@ -12,8 +12,21 @@ export default function RequestCard({
   handleSelect: (request: IStoreRequest) => void;
 }) {
   return (
-    <div id={request._id} className="min-w-72 border-2 border-slate-400 p-2">
-      <input type="checkbox" onChange={() => handleSelect(request)} />
+    <div
+      id={request._id}
+      className="m-2 min-w-96 justify-center border-2 border-slate-400 p-2"
+    >
+      <div className="rounded-lg bg-pink-200 hover:bg-pink-300 active:bg-pink-400">
+        <input
+          id="picking"
+          className="m-2 scale-150"
+          type="checkbox"
+          onChange={() => handleSelect(request)}
+        />
+        <label className="ml-2" htmlFor="picking">
+          Click me to pick this order
+        </label>
+      </div>
       <p>
         Requesting Store: <strong>{request.requestingStore}</strong>
       </p>
@@ -28,7 +41,7 @@ export default function RequestCard({
               {item.quantity} x {item.sku}
             </p>
             <p>{item.description}</p>
-            <p>qty picked: {item.quantityPicked}</p>
+            <p>Qty picked: {item.quantityPicked}</p>
           </li>
         ))}
       </ul>

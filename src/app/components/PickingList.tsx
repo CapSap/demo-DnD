@@ -74,9 +74,7 @@ export default function PickingList({
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
             itemStatus:
-              item.quantityPicked === item.quantity
-                ? "fully picked"
-                : item.itemStatus,
+              item.quantityPicked === item.quantity ? "fully picked" : "new",
           };
         } else {
           return item;
@@ -86,6 +84,7 @@ export default function PickingList({
       const updatedOrder = {
         ...prev[index],
         items: updatedItems,
+        status: "new",
       };
 
       const updatedState = [
@@ -146,16 +145,18 @@ export default function PickingList({
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
             itemStatus:
-              item.quantityPicked === item.quantity
-                ? "fully picked"
-                : item.itemStatus,
+              item.quantityPicked === item.quantity ? "fully picked" : "new",
           };
         } else {
           return item;
         }
       });
       // create a new order with updated scan number
-      const updatedOrder = { ...prev[index], items: updatedItems };
+      const updatedOrder = {
+        ...prev[index],
+        items: updatedItems,
+        status: "new",
+      };
 
       const updatedState = [
         ...prev.slice(0, index),
