@@ -34,7 +34,7 @@ export default async function DashboardPage() {
     return (
       <>
         <h1>Seven Hills Todos (to be picked and posted)</h1>
-        <div className="m-10 flex flex-wrap gap-4">
+        <div className="m-10">
           <DashBoard
             requests={requests}
             updateOneStoreRequest={updateOneStoreRequest}
