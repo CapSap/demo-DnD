@@ -26,7 +26,7 @@ export default function RequestUpdateCard({
     ibt !== request.ibt || tracking !== request.tracking;
 
   return (
-    <div id={request._id} className="min-w-72 border-2 border-slate-400 p-2">
+    <div id={request._id} className="min-w-96 border-2 border-slate-400 p-2">
       <p>
         Requesting Store: <strong>{request.requestingStore}</strong>
       </p>
@@ -66,7 +66,7 @@ export default function RequestUpdateCard({
         />
       </div>
       {isThereUnsavedChanges ? (
-        <div className="flex items-center">
+        <div className="m-2 flex items-center rounded-2xl bg-yellow-400 px-2 py-1">
           <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
             <svg
               className="h-6 w-6 text-red-600"
@@ -83,7 +83,9 @@ export default function RequestUpdateCard({
               />
             </svg>
           </div>
-          <p className="">Warning: There are some unsaved changes</p>
+          <p className="ml-2 font-bold">
+            Warning: There are some unsaved changes
+          </p>
         </div>
       ) : null}
       <button
