@@ -31,7 +31,8 @@ export default function RequestUpdateCard({
         Requesting Store: <strong>{request.requestingStore}</strong>
       </p>
       <p>
-        Customer Name: <strong>{request.name}</strong>
+        <span className="select-none">Customer Name: </span>
+        <strong>{request.name}</strong>
       </p>
 
       <ul className="list-disc pl-6">
@@ -41,10 +42,26 @@ export default function RequestUpdateCard({
               {item.quantity} x {item.sku}
             </p>
             <p>{item.description}</p>
-            <p>qty picked: {item.quantityPicked}</p>
+            <p>Qty picked: {item.quantityPicked}</p>
           </li>
         ))}
       </ul>
+      <div className="m-2 p-2">
+        <p className="text-xl">
+          <span className="select-none">Address: </span>
+          <strong>{request.address}</strong>
+        </p>
+
+        <p className="text-xl">
+          <span className="select-none">Phone: </span>
+          <strong>{request.phone}</strong>
+        </p>
+
+        <p className="text-xl">
+          <span className="select-none">Email: </span>
+          <strong>{request.email}</strong>
+        </p>
+      </div>
       <div className="grid grid-cols-4 items-center justify-items-end gap-y-1 p-1">
         <label htmlFor="ibt" className="px-1">
           IBT{" "}
