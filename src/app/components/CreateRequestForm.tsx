@@ -279,6 +279,45 @@ export default function CreateRequestForm({
             onChange={(e) => setEmail(e.target.value)}
             className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
+          <fieldset>
+            <legend className="text-sm font-semibold leading-6 text-gray-900">
+              Deliver to customer's home or your store?
+            </legend>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              Select an option and choose where the item should be delivered to
+            </p>
+            <div className="flex justify-around">
+              <div className="flex items-center gap-x-3">
+                <input
+                  id="delivery-store"
+                  name="delivery"
+                  type="radio"
+                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                />
+                <label
+                  htmlFor="delivery-store"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Deliver to your store
+                </label>
+              </div>
+              <div className="flex items-center gap-x-3">
+                <input
+                  id="delivery-home"
+                  name="delivery"
+                  type="radio"
+                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                />
+                <label
+                  htmlFor="delivery-home"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Same as email
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
           <label htmlFor="address">Customer Address</label>
           <textarea
             name="address"
