@@ -36,6 +36,7 @@ export type IStoreRequest = {
   ibt: string;
   tracking: string;
   updatedAt: string;
+  destination: string;
 };
 
 export type IPartialStoreRequest = Partial<

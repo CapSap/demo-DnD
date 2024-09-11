@@ -22,6 +22,7 @@ export default function CreateRequestForm({
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [destination, setDestination] = useState("");
 
   type SearchResults = {
     exactResults: {
@@ -206,6 +207,10 @@ export default function CreateRequestForm({
     };
   }, [productSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  function handleDestinationChange(location: string) {
+    setDestination(location);
+  }
+
   return (
     <div className="flex flex-col items-center">
       <form
@@ -281,7 +286,7 @@ export default function CreateRequestForm({
           />
           <fieldset>
             <legend className="text-sm font-semibold leading-6 text-gray-900">
-              Deliver to customer's home or your store?
+              {"Deliver to customer's home or your store?"}
             </legend>
             <p className="mt-1 text-sm leading-6 text-gray-600">
               Select an option and choose where the item should be delivered to
@@ -289,13 +294,15 @@ export default function CreateRequestForm({
             <div className="flex justify-around">
               <div className="flex items-center gap-x-3">
                 <input
-                  id="delivery-store"
-                  name="delivery"
+                  id="destination-store"
+                  name="destination"
                   type="radio"
                   className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                  onChange={() => handleDestinationChange("store")}
+                  checked={destination === "store"}
                 />
                 <label
-                  htmlFor="delivery-store"
+                  htmlFor="destination-store"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Deliver to your store
@@ -303,16 +310,18 @@ export default function CreateRequestForm({
               </div>
               <div className="flex items-center gap-x-3">
                 <input
-                  id="delivery-home"
-                  name="delivery"
+                  id="destination-home"
+                  name="destination"
                   type="radio"
                   className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                  onChange={() => handleDestinationChange("home")}
+                  checked={destination === "home"}
                 />
                 <label
-                  htmlFor="delivery-home"
+                  htmlFor="destination-home"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  Same as email
+                  {"Customer's Home"}
                 </label>
               </div>
             </div>
