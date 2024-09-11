@@ -81,6 +81,7 @@ export default function CreateRequestForm({
       email: email,
       address: address,
       items: items,
+      destination: destination,
     };
 
     const message = await createStoreRequest(payload);
