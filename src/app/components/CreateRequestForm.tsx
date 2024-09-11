@@ -330,6 +330,7 @@ export default function CreateRequestForm({
             <>
               <label htmlFor="address">Customer Address</label>
               <textarea
+                required={true}
                 name="address"
                 id="address"
                 value={address}
