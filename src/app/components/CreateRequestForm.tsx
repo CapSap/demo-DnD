@@ -284,12 +284,12 @@ export default function CreateRequestForm({
             onChange={(e) => setEmail(e.target.value)}
             className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
-          <fieldset>
-            <legend className="text-sm font-semibold leading-6 text-gray-900">
+          <fieldset className="mt-4">
+            <legend className="leading-6 text-gray-900">
               {"Deliver to customer's home or your store?"}
             </legend>
             <p className="mt-1 text-sm leading-6 text-gray-600">
-              Select an option and choose where the item should be delivered to
+              Select an option and choose where item(s) should be delivered to
             </p>
             <div className="flex justify-around">
               <div className="flex items-center gap-x-3">
@@ -351,36 +351,39 @@ export default function CreateRequestForm({
               value={productSearch}
               onChange={(e) => setProductSearch(e.target.value)}
             />
+          </div>
+
+          <div className="my-1 flex content-around">
+            <select
+              className="mr-4 flex-grow rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
+              name="products"
+              onChange={(e) => {
+                setSelectedProductID(e.target.selectedOptions[0].id);
+              }}
+              value={selectedProductID}
+              defaultValue={"Search for some skus"}
+            >
+              <option disabled className="p-10">
+                Search for some skus
+              </option>
+              {products.likeResults &&
+                products.likeResults.map((item) => (
+                  <option
+                    key={item.ItemCode}
+                    id={item.ItemCode}
+                    value={item.ItemCode}
+                  >
+                    {item.Style} {item.Colour} {item.Size} - {item.ItemCode}
+                  </option>
+                ))}
+            </select>
             <button
               onClick={(e) => handleAddProduct(e)}
               className="rounded-lg bg-indigo-400 px-6 py-2 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-500 focus-visible:ring active:bg-indigo-700 md:text-base"
             >
-              Populate below
+              Add selected item
             </button>
           </div>
-          <select
-            className="rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
-            name="products"
-            onChange={(e) => {
-              setSelectedProductID(e.target.selectedOptions[0].id);
-            }}
-            value={selectedProductID}
-            defaultValue={"Search for some skus"}
-          >
-            <option disabled className="p-10">
-              Search for some skus
-            </option>
-            {products.likeResults &&
-              products.likeResults.map((item) => (
-                <option
-                  key={item.ItemCode}
-                  id={item.ItemCode}
-                  value={item.ItemCode}
-                >
-                  {item.Style} {item.Colour} {item.Size} - {item.ItemCode}
-                </option>
-              ))}
-          </select>
 
           <div className="m-4 flex items-center justify-center md:col-span-2">
             <p className="pr-2">Fill in an item request manually: </p>
@@ -389,7 +392,7 @@ export default function CreateRequestForm({
               onClick={() => handleGetMoreItems()}
               className="rounded-lg bg-indigo-200 px-4 py-1 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-300 focus-visible:ring active:bg-indigo-500"
             >
-              Add a request below
+              Add a blank request below
             </button>
           </div>
         </div>
@@ -444,7 +447,7 @@ export default function CreateRequestForm({
             type="submit"
             className="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-lg font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700"
           >
-            Submit order/request to store
+            Submit request to store
           </button>
         </div>
         <div>{loading ? "Sending Request..." : message}</div>
