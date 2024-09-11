@@ -11,6 +11,7 @@ const storeRequestSchema = new mongoose.Schema<IStoreRequest>(
     status: { type: String, enum: ["new", "issue picking"], default: "new" },
     ibt: String,
     tracking: String,
+    destination: String,
 
     items: [
       {
