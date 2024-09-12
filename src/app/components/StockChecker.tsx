@@ -28,8 +28,6 @@ export default function StockChecker({ sku }: { sku: string }) {
     checkStock(sku);
   }, [sku]);
 
-  console.log(storeStockLevels);
-
   return (
     <>
       {storeStockLevels && storeStockLevels.length > 0 ? (
