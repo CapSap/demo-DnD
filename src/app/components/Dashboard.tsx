@@ -45,12 +45,6 @@ export default function DashBoard({
     (request) => request.status === "ready to post",
   );
 
-  console.log(
-    "this is the filteres todos",
-    Boolean(requestsToPick),
-    requestsToPick,
-  );
-
   return (
     <>
       <div>

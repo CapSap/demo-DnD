@@ -5,7 +5,6 @@ import { IStoreRequest, Item } from "../types/types";
 import { Fragment } from "react";
 
 export default function RequestCard({ request }: { request: IStoreRequest }) {
-  console.log(request);
   return (
     <div id={request._id} className="min-w-96 border-2 border-slate-400 p-2">
       <p>
