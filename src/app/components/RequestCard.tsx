@@ -9,7 +9,7 @@ export default function RequestCard({
   handleSelect,
 }: {
   request: IStoreRequest;
-  handleSelect: (request: IStoreRequest, index: number) => void;
+  handleSelect: (request: IStoreRequest) => void;
 }) {
   return (
     <div className="m-2 min-w-96 justify-center border-2 border-slate-400 p-2">
