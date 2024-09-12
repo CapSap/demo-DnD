@@ -235,13 +235,13 @@ export default function PickingList({
   }
 
   function handleItemUnavaliablePress(
-    requestIndex: number,
+    orderIndex: number,
     sku: string,
     itemIndex: number,
   ) {
     setOrdersBeingPicked((prev) => {
       // update the items
-      const updatedItems: Item[] = prev[requestIndex].items.map((item) => {
+      const updatedItems: Item[] = prev[orderIndex].items.map((item) => {
         if (item.sku === sku) {
           console.log(item.itemStatus);
           return {
@@ -254,15 +254,15 @@ export default function PickingList({
       });
       // create a new order with updated scan number
       const updatedOrder: IStoreRequest = {
-        ...prev[requestIndex],
+        ...prev[orderIndex],
         items: updatedItems,
         status: "issue picking",
       };
 
       const updatedState = [
-        ...prev.slice(0, requestIndex),
+        ...prev.slice(0, orderIndex),
         updatedOrder,
-        ...prev.slice(requestIndex + 1),
+        ...prev.slice(orderIndex + 1),
       ];
       return updatedState;
     });
