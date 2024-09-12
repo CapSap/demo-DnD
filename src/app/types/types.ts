@@ -3,9 +3,11 @@ export type Item = {
   sku: string;
   quantity: string;
   description: string;
-  itemStatus: "okay" | "short picked" | "new" | "fully picked";
+  itemStatus: ItemStatus;
   quantityPicked: string;
 };
+
+export type ItemStatus = "okay" | "short picked" | "new" | "fully picked";
 
 export type PartialItem = Partial<
   Omit<Item, "_id" | "itemStatus" | "quantityPicked">
@@ -32,12 +34,18 @@ export type IStoreRequest = {
   email: string;
   address: string;
   items: Item[];
-  status: "new" | "issue picking" | "ready to post" | "posted";
+  status: RequestStatus;
   ibt: string;
   tracking: string;
   updatedAt: string;
   destination: string;
 };
+
+export type RequestStatus =
+  | "new"
+  | "issue picking"
+  | "ready to post"
+  | "posted";
 
 export type IPartialStoreRequest = Partial<
   Omit<IStoreRequest, "_id" | "items" | "status">
