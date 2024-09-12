@@ -7,7 +7,7 @@ import { IStoreRequest } from "../types/types";
 import RequestUpdateCard from "./RequestUpdateCard";
 import RequestCardArchived from "./RequestCardArchived";
 
-export default function DashBoard({
+export default function PickAndDispatch({
   requests,
   updateOneStoreRequest,
 }: {

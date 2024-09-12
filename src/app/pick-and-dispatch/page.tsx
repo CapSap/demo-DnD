@@ -1,12 +1,12 @@
 import Link from "next/link";
-import DashBoard from "../components/Dashboard";
+import PickAndDispatch from "../components/PickAndDispatch";
 import { getStoreRequests, updateOneStoreRequest } from "../utils/dbConnect";
 import { initializeProntoData } from "../utils/initProntoDatabase";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function DashboardPage() {
+export default async function PickAndDispatchPage() {
   const requests = await getStoreRequests();
   initializeProntoData();
 
@@ -35,7 +35,7 @@ export default async function DashboardPage() {
       <>
         <h1>Seven Hills Todos (to be picked and posted)</h1>
         <div className="m-10">
-          <DashBoard
+          <PickAndDispatch
             requests={requests}
             updateOneStoreRequest={updateOneStoreRequest}
           />

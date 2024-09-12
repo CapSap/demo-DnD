@@ -28,6 +28,12 @@ export default function RootLayout({
               Dashboard
             </Link>
             <Link
+              href={"/pick-and-dispatch"}
+              className="p-2 hover:bg-green-400 hover:font-bold active:bg-green-600"
+            >
+              Pick and Dispatch
+            </Link>
+            <Link
               href={"/create-request"}
               className="p-2 hover:bg-green-400 hover:font-bold active:bg-green-600"
             >
