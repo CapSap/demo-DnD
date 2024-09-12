@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 type store = {
   name: string;
@@ -37,10 +37,10 @@ export default function StockChecker({ sku }: { sku: string }) {
           <h3 className="font-bold">Store Name</h3>
           <h3 className="font-bold">Quantity</h3>
           {storeStockLevels.map((store) => (
-            <>
+            <Fragment key={store.name}>
               <p key={store.name}>{store.name}</p>
               <p key={store.name + store.quantity}>{store.quantity}</p>
-            </>
+            </Fragment>
           ))}
         </div>
       ) : (
