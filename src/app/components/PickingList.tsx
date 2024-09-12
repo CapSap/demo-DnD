@@ -3,7 +3,7 @@
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { RequestContext } from "./RequestContext";
 import { useRouter } from "next/navigation";
-import { IStoreRequest, Item } from "../types/types";
+import { IStoreRequest, Item, ItemStatus, RequestStatus } from "../types/types";
 import { data as barcodeData } from "../utils/data";
 
 export default function PickingList({
@@ -48,7 +48,7 @@ export default function PickingList({
     e.preventDefault();
     const prontoSku = findProntoSku(scanValue);
 
-    setOrdersBeingPicked((prev) => {
+    setOrdersBeingPicked((prev: IStoreRequest[]) => {
       // find the index of the order that has a sku that needs to be picked
       const index = prev.findIndex((order) => {
         return order.items.some(
@@ -77,8 +77,9 @@ export default function PickingList({
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
-            itemStatus:
-              item.quantityPicked === item.quantity ? "fully picked" : "new",
+            itemStatus: (item.quantityPicked === item.quantity
+              ? "fully picked"
+              : "new") as ItemStatus,
           };
         } else {
           return item;
@@ -89,7 +90,7 @@ export default function PickingList({
       const updatedOrder = {
         ...prev[index],
         items: updatedItems,
-        status: "new",
+        status: "new" as RequestStatus,
       };
 
       const updatedState = [
@@ -157,8 +158,9 @@ export default function PickingList({
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
-            itemStatus:
-              item.quantityPicked === item.quantity ? "fully picked" : "new",
+            itemStatus: (item.quantityPicked === item.quantity
+              ? "fully picked"
+              : "new") as ItemStatus,
           };
         } else {
           return item;
@@ -169,7 +171,7 @@ export default function PickingList({
       const updatedOrder = {
         ...prev[orderIndex],
         items: updatedItems,
-        status: "new",
+        status: "new" as RequestStatus,
       };
 
       const updatedState = [
@@ -232,10 +234,14 @@ export default function PickingList({
     setSubmitAttempted(false);
   }
 
-  function handleItemUnavaliablePress(index: number, sku: string) {
+  function handleItemUnavaliablePress(
+    requestIndex: number,
+    sku: string,
+    itemIndex: number,
+  ) {
     setOrdersBeingPicked((prev) => {
       // update the items
-      const updatedItems: Item[] = prev[index].items.map((item) => {
+      const updatedItems: Item[] = prev[requestIndex].items.map((item) => {
         if (item.sku === sku) {
           console.log(item.itemStatus);
           return {
@@ -248,15 +254,15 @@ export default function PickingList({
       });
       // create a new order with updated scan number
       const updatedOrder: IStoreRequest = {
-        ...prev[index],
+        ...prev[requestIndex],
         items: updatedItems,
         status: "issue picking",
       };
 
       const updatedState = [
-        ...prev.slice(0, index),
+        ...prev.slice(0, requestIndex),
         updatedOrder,
-        ...prev.slice(index + 1),
+        ...prev.slice(requestIndex + 1),
       ];
       return updatedState;
     });
