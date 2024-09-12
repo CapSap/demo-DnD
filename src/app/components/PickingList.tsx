@@ -67,9 +67,13 @@ export default function PickingList({
       setScanValue("");
       setSubmitAttempted(false);
 
+      // find the index of the item to update
+      const itemIndex = prev[index].items.findIndex(
+        (item) => item.sku === prontoSku && item.quantityPicked < item.quantity,
+      );
       // update the items
-      const updatedItems = prev[index].items.map((item) => {
-        if (item.sku === prontoSku && item.quantityPicked < item.quantity) {
+      const updatedItems = prev[index].items.map((item, index) => {
+        if (index === itemIndex) {
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
@@ -80,6 +84,7 @@ export default function PickingList({
           return item;
         }
       });
+
       // create a new order with updated scan count
       const updatedOrder = {
         ...prev[index],
@@ -136,11 +141,19 @@ export default function PickingList({
     }
   }
 
-  function handleIncrementPress(index: number, sku: string) {
+  function handleIncrementPress(
+    orderIndex: number,
+    sku: string,
+    itemIndex: number,
+  ) {
     setOrdersBeingPicked((prev) => {
       // update the items
-      const updatedItems = prev[index].items.map((item) => {
-        if (item.sku === sku && item.quantityPicked < item.quantity) {
+      const updatedItems = prev[orderIndex].items.map((item, index) => {
+        if (
+          index === itemIndex &&
+          item.sku === sku &&
+          item.quantityPicked < item.quantity
+        ) {
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
@@ -151,17 +164,18 @@ export default function PickingList({
           return item;
         }
       });
+
       // create a new order with updated scan number
       const updatedOrder = {
-        ...prev[index],
+        ...prev[orderIndex],
         items: updatedItems,
         status: "new",
       };
 
       const updatedState = [
-        ...prev.slice(0, index),
+        ...prev.slice(0, orderIndex),
         updatedOrder,
-        ...prev.slice(index + 1),
+        ...prev.slice(orderIndex + 1),
       ];
 
       return updatedState;
@@ -173,11 +187,16 @@ export default function PickingList({
     setSubmitAttempted(false);
   }
 
-  function handleDecrementPress(index: number, sku: string) {
+  function handleDecrementPress(
+    orderIndex: number,
+    sku: string,
+    itemIndex: number,
+  ) {
     setOrdersBeingPicked((prev) => {
       // update the items
-      const updatedItems: Item[] = prev[index].items.map((item) => {
+      const updatedItems: Item[] = prev[orderIndex].items.map((item, index) => {
         if (
+          index === itemIndex &&
           item.sku === sku &&
           item.quantityPicked <= item.quantity &&
           Number(item.quantityPicked) > 0
@@ -194,14 +213,14 @@ export default function PickingList({
       });
       // create a new order with updated scan number
       const updatedOrder = {
-        ...prev[index],
+        ...prev[orderIndex],
         items: updatedItems,
       };
 
       const updatedState = [
-        ...prev.slice(0, index),
+        ...prev.slice(0, orderIndex),
         updatedOrder,
-        ...prev.slice(index + 1),
+        ...prev.slice(orderIndex + 1),
       ];
 
       return updatedState;
@@ -275,10 +294,10 @@ export default function PickingList({
       <form onSubmit={(e) => handlePickingComplete(e)} noValidate>
         <h2>Items to pick</h2>
         {ordersBeingPicked && ordersBeingPicked.length
-          ? ordersBeingPicked.map((request, index) => (
+          ? ordersBeingPicked.map((request, orderIndex) => (
               <div key={request._id}>
                 <ul>
-                  {request.items.map((item) => (
+                  {request.items.map((item, itemIndex) => (
                     <li
                       key={item._id}
                       className={`m-2 flex min-w-72 justify-between border-2 border-slate-400 p-4 ${
@@ -299,14 +318,26 @@ export default function PickingList({
                         <button
                           className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
                           type="button"
-                          onClick={() => handleIncrementPress(index, item.sku)}
+                          onClick={() =>
+                            handleIncrementPress(
+                              orderIndex,
+                              item.sku,
+                              itemIndex,
+                            )
+                          }
                         >
                           Manually increment scan
                         </button>
                         <button
                           className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
                           type="button"
-                          onClick={() => handleDecrementPress(index, item.sku)}
+                          onClick={() =>
+                            handleDecrementPress(
+                              orderIndex,
+                              item.sku,
+                              itemIndex,
+                            )
+                          }
                         >
                           Undo scan
                         </button>
@@ -316,7 +347,11 @@ export default function PickingList({
                             className="rounded bg-orange-300 px-4 py-2 hover:bg-orange-700"
                             type="button"
                             onClick={() =>
-                              handleItemUnavaliablePress(index, item.sku)
+                              handleItemUnavaliablePress(
+                                orderIndex,
+                                item.sku,
+                                itemIndex,
+                              )
                             }
                           >
                             Mark{" "}
