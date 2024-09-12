@@ -21,7 +21,7 @@ const storeRequestSchema = new mongoose.Schema<IStoreRequest>(
         quantityPicked: { type: String, default: "0" },
         itemStatus: {
           type: String,
-          enum: ["okay", "short picked", "new"],
+          enum: ["okay", "short picked", "new", "fully picked"],
           default: "new",
         },
       },
