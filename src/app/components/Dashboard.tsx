@@ -2,12 +2,24 @@
 
 import { useState } from "react";
 import { IStoreRequest } from "../types/types";
+import RequestCard from "./RequestCard";
 
 export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
   const [store, setStore] = useState("default");
 
   const filteredRequsts = requests.filter(
     (request) => request.requestingStore === store,
+  );
+
+  const newRequests = filteredRequsts.filter(
+    (request) => request.status === "new",
+  );
+  const processingRequests = filteredRequsts.filter(
+    (request) =>
+      request.status === "issue picking" || request.status === "ready to post",
+  );
+  const inTransitRequests = filteredRequsts.filter(
+    (request) => request.status === "posted",
   );
 
   console.log(filteredRequsts);
@@ -45,9 +57,26 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
           <option value="210">Sydney - 210</option>
         </select>
       </div>
-      <div>
-        <h2>summary</h2>
-      </div>
+
+      {store === "default" ? (
+        <p>Please choose a store </p>
+      ) : (
+        <div className="mt-4">
+          <div>
+            <h2>Summary</h2>
+            <p>Numer of new/untouched requests: {newRequests.length}</p>
+            <p>Numer of in progress requests: {processingRequests.length}</p>
+            <p>Numer of in transit requests: {inTransitRequests.length}</p>
+          </div>
+          <div>
+            <h2>New requests</h2>
+            {newRequests &&
+              newRequests.map((request) => (
+                <RequestCard request={request} key={request._id} />
+              ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
