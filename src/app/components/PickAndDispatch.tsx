@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { IStoreRequest } from "../types/types";
 import RequestUpdateCard from "./RequestUpdateCard";
 import RequestCardArchived from "./RequestCardArchived";
+import RequestPickCard from "./RequestPickCard";
 
 export default function PickAndDispatch({
   requests,
@@ -65,7 +66,7 @@ export default function PickAndDispatch({
         <div className="flex flex-wrap gap-4">
           {requestsToPick.length > 0 ? (
             requestsToPick.map((request) => (
-              <RequestCard
+              <RequestPickCard
                 key={request._id}
                 request={request}
                 handleSelect={handleSelect}
