@@ -109,7 +109,11 @@ export default function PickAndDispatch({
             requests
               .filter((request) => request.status === "posted")
               .map((request) => (
-                <RequestCardArchived key={request._id} request={request} />
+                <RequestCardArchived
+                  key={request._id}
+                  request={request}
+                  updateOneStoreRequest={updateOneStoreRequest}
+                />
               ))}
         </div>
       </div>
