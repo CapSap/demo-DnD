@@ -158,20 +158,27 @@ export default function PickingList({
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
-            itemStatus: (item.quantityPicked === item.quantity
+            itemStatus: (Number(item.quantityPicked + 1).toString() ===
+            item.quantity
               ? "fully picked"
-              : "new") as ItemStatus,
+              : item.itemStatus) as ItemStatus,
           };
         } else {
           return item;
         }
       });
 
+      const orderStatus = updatedItems.every(
+        (item) => item.itemStatus === "fully picked",
+      )
+        ? "ready to post"
+        : "issue picking";
+
       // create a new order with updated scan number
       const updatedOrder = {
         ...prev[orderIndex],
         items: updatedItems,
-        status: "new" as RequestStatus,
+        status: orderStatus as RequestStatus,
       };
 
       const updatedState = [
