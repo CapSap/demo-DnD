@@ -15,8 +15,11 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
     (request) => request.status === "new",
   );
   const processingRequests = filteredRequsts.filter(
-    (request) =>
-      request.status === "issue picking" || request.status === "ready to post",
+    (request) => request.status === "ready to post",
+  );
+
+  const issueRequests = filteredRequsts.filter(
+    (request) => request.status === "issue picking",
   );
   const inTransitRequests = filteredRequsts.filter(
     (request) => request.status === "posted",
@@ -68,6 +71,7 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
             </h2>
             <p>Numer of new/untouched requests: {newRequests.length}</p>
             <p>Numer of in progress requests: {processingRequests.length}</p>
+            <p>Numer of in requests with issues : {issueRequests.length}</p>
             <p>Numer of in transit requests: {inTransitRequests.length}</p>
           </div>
           <div className="mt-4">
@@ -78,7 +82,11 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
                 </h2>
                 {newRequests &&
                   newRequests.map((request) => (
-                    <RequestCard request={request} key={request._id} />
+                    <RequestCard
+                      request={request}
+                      key={request._id}
+                      style={"bg-red-200"}
+                    />
                   ))}
               </>
             ) : (
@@ -95,7 +103,32 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
                 </h2>
                 {processingRequests &&
                   processingRequests.map((request) => (
-                    <RequestCard request={request} key={request._id} />
+                    <RequestCard
+                      request={request}
+                      key={request._id}
+                      style={""}
+                    />
+                  ))}
+              </>
+            ) : (
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                There are no requests being proceesed
+              </h2>
+            )}
+          </div>
+          <div className="mt-4">
+            {issueRequests.length > 0 ? (
+              <>
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  Requests with issues
+                </h2>
+                {issueRequests &&
+                  issueRequests.map((request) => (
+                    <RequestCard
+                      request={request}
+                      key={request._id}
+                      style="bg-red-200"
+                    />
                   ))}
               </>
             ) : (
@@ -113,7 +146,7 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
                 </h2>
                 {inTransitRequests &&
                   inTransitRequests.map((request) => (
-                    <RequestCard request={request} key={request._id} />
+                    <RequestCard request={request} key={request._id} style="" />
                   ))}
               </>
             ) : (
@@ -130,7 +163,7 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
               </h2>
               {filteredRequsts &&
                 filteredRequsts.map((request) => (
-                  <RequestCard request={request} key={request._id} />
+                  <RequestCard request={request} key={request._id} style="" />
                 ))}
             </>
           </div>
