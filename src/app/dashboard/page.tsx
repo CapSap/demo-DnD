@@ -20,7 +20,6 @@ export default async function PickAndDispatchPage() {
   } else {
     return (
       <>
-        <h1>Dashboard Page</h1>
         <div className="m-10">
           <Dashboard requests={requests} />
         </div>

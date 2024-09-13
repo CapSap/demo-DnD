@@ -33,7 +33,7 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
           className="flex flex-col text-sm text-gray-800 sm:text-base"
           htmlFor="requestingStore"
         >
-          Select your store location:
+          Select your store to see requests:
         </label>
         <select
           required={true}
@@ -62,7 +62,7 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
       </div>
 
       {store === "default" ? (
-        <p>Please choose a store </p>
+        <p>Please select your store from the above drop down</p>
       ) : (
         <div className="mt-4">
           <div>
