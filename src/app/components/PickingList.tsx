@@ -135,10 +135,10 @@ export default function PickingList({
       }
       // if no error set message, pause and then navigate to dashboard
       setMessage(
-        `${resultObject.modifiedCount} of ${ordersBeingPicked.length} orders updated successfully. Navigating to dashboard...`,
+        `${resultObject.modifiedCount} of ${ordersBeingPicked.length} orders updated successfully. Navigating to pick and dispatch page...`,
       );
       setSubmitAttempted(false);
-      setTimeout(() => router.push("/dashboard"), 4000);
+      setTimeout(() => router.push("/pick-and-dispatch"), 4000);
     }
   }
 
