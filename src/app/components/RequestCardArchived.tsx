@@ -1,8 +1,7 @@
 "use client";
 
-import { HydratedDocument } from "mongoose";
 import { IStoreRequest, Item } from "../types/types";
-import { Fragment } from "react";
+import ConfirmButton from "./ConfirmButton";
 
 export default function RequestCard({
   request,
@@ -11,6 +10,15 @@ export default function RequestCard({
   request: IStoreRequest;
   updateOneStoreRequest: (request: string) => Promise<string>;
 }) {
+  async function handleRedoPress() {
+    try {
+      const payload = JSON.stringify({ ...request, status: "ready to post" });
+      const result = await updateOneStoreRequest(payload);
+      console.log("result", payload, result);
+    } catch (err) {
+      console.error("did not update", err);
+    }
+  }
   return (
     <div id={request._id} className="min-w-96 border-2 border-slate-400 p-2">
       <p>
@@ -40,6 +48,7 @@ export default function RequestCard({
       <p>
         Posted on: <strong>{request.updatedAt}</strong>
       </p>
+      <ConfirmButton onConfirm={handleRedoPress} />
     </div>
   );
 }

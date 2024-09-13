@@ -112,7 +112,7 @@ function convertId<T extends IStoreRequest | Item>(
 export const updateOneStoreRequest = async (request: string) => {
   "use server";
 
-  revalidatePath("/dashboard");
+  revalidatePath("/pick-and-dispatch");
   try {
     // data from client must be a plain js object, mongo objects are not plain js ob (POJO)
     const parsedRequest = JSON.parse(request);
@@ -121,10 +121,6 @@ export const updateOneStoreRequest = async (request: string) => {
       items: parsedRequest.items.map((item: Item) => convertId(item)),
     };
 
-    // update ibt and tracking, and update status if both fields are present
-    const newStatus =
-      parsedRequest.ibt && parsedRequest.tracking ? "posted" : undefined;
-
     await dbConnect();
     const result = await StoreRequest.updateOne(
       { _id: requestWithObjIds._id },
@@ -132,7 +128,6 @@ export const updateOneStoreRequest = async (request: string) => {
         $set: {
           ibt: requestWithObjIds.ibt,
           tracking: requestWithObjIds.tracking,
-          status: newStatus,
         },
       },
     );
