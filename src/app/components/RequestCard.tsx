@@ -4,9 +4,17 @@ import { HydratedDocument } from "mongoose";
 import { IStoreRequest, Item } from "../types/types";
 import { Fragment } from "react";
 
-export default function RequestCard({ request }: { request: IStoreRequest }) {
+export default function RequestCard({
+  request,
+  style,
+}: {
+  request: IStoreRequest;
+  style: string;
+}) {
   return (
-    <div className="m-2 min-w-96 justify-center border-2 border-slate-400 p-2">
+    <div
+      className={`m-2 min-w-96 justify-center border-2 border-slate-400 p-2 ${style}`}
+    >
       <p>
         Request Status: <strong>{request.status}</strong>
       </p>
