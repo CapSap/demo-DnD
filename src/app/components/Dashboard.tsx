@@ -1,117 +1,174 @@
 "use client";
-import RequestCard from "./RequestCard";
-import { useContext, useState } from "react";
-import { RequestContext } from "./RequestContext";
-import { useRouter } from "next/navigation";
+
+import { useState } from "react";
 import { IStoreRequest } from "../types/types";
-import RequestUpdateCard from "./RequestUpdateCard";
-import RequestCardArchived from "./RequestCardArchived";
+import RequestCard from "./RequestCard";
 
-export default function DashBoard({
-  requests,
-  updateOneStoreRequest,
-}: {
-  requests: IStoreRequest[];
-  updateOneStoreRequest: (request: string) => Promise<string>;
-}) {
-  const [selected, setSelected] = useState<IStoreRequest[]>([]);
-  const [_, setRequests] = useContext(RequestContext);
+export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
+  const [store, setStore] = useState("default");
 
-  const router = useRouter();
-
-  function handleSelect(request: IStoreRequest) {
-    setSelected((prev) => {
-      if (prev.includes(request)) {
-        return prev.filter((item) => item !== request);
-      } else {
-        return [...prev, request];
-      }
-    });
-  }
-
-  function handleButtonClick() {
-    // save context
-    console.log("click");
-    setRequests(selected);
-    // nav to picking
-    router.push("/picking");
-  }
-
-  const requestsToPick = requests.filter(
-    (request) => request.status === "issue picking" || request.status === "new",
+  const filteredRequsts = requests.filter(
+    (request) => request.requestingStore === store,
   );
 
-  const requestsToPost = requests.filter(
+  const newRequests = filteredRequsts.filter(
+    (request) => request.status === "new",
+  );
+  const processingRequests = filteredRequsts.filter(
     (request) => request.status === "ready to post",
   );
 
+  const issueRequests = filteredRequsts.filter(
+    (request) => request.status === "issue picking",
+  );
+  const inTransitRequests = filteredRequsts.filter(
+    (request) => request.status === "posted",
+  );
+
+  console.log(filteredRequsts);
   return (
-    <>
+    <div>
       <div>
-        {requestsToPick.length > 0 ? (
-          <button
-            onClick={() => handleButtonClick()}
-            className="rounded-lg bg-pink-400 px-6 py-2 text-center text-sm font-semibold outline-none ring-pink-300 transition duration-100 hover:bg-pink-500 focus-visible:ring active:bg-pink-700 md:text-base"
-          >
-            Go to picking page with your selected requests (Tick the requests
-            that you want to pick)
-          </button>
-        ) : null}
+        <label
+          className="flex flex-col text-sm text-gray-800 sm:text-base"
+          htmlFor="requestingStore"
+        >
+          Select your store location:
+        </label>
+        <select
+          required={true}
+          className="rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
+          id={"requestingStore"}
+          name="requestingStore"
+          key={"requestingStore"}
+          value={store}
+          onChange={(e) => {
+            setStore(e.target.value);
+          }}
+        >
+          <option value={"default"} disabled={true}>
+            Please choose an option
+          </option>
+
+          <option value="213">Canberra - 213</option>
+          <option value="416">Fortitude Valley - 416</option>
+          <option value="710">Hobart - 710</option>
+          <option value="314">Melbourne - 314</option>
+          <option value="208">Seven Hills - 208</option>
+          <option value="615">Perth - 615</option>
+          <option value="319">Ringwood - 319</option>
+          <option value="210">Sydney - 210</option>
+        </select>
       </div>
-      <div>
-        <h2 className="text-base font-semibold leading-7 text-gray-900">
-          Orders TODO
-        </h2>
-        <div className="flex flex-wrap gap-4">
-          {requestsToPick.length > 0 ? (
-            requestsToPick.map((request) => (
-              <RequestCard
-                key={request._id}
-                request={request}
-                handleSelect={handleSelect}
-              />
-            ))
-          ) : (
-            <div className="flex w-full justify-center bg-gray-300 p-5">
-              <p className="">There are no requests to pick!</p>
-            </div>
-          )}
+
+      {store === "default" ? (
+        <p>Please choose a store </p>
+      ) : (
+        <div className="mt-4">
+          <div>
+            <h2 className="text-base font-semibold leading-7 text-gray-900">
+              Summary
+            </h2>
+            <p>Numer of new/untouched requests: {newRequests.length}</p>
+            <p>Numer of in progress requests: {processingRequests.length}</p>
+            <p>Numer of in requests with issues : {issueRequests.length}</p>
+            <p>Numer of in transit requests: {inTransitRequests.length}</p>
+          </div>
+          <div className="mt-4">
+            {newRequests.length > 0 ? (
+              <>
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  New requests
+                </h2>
+                {newRequests &&
+                  newRequests.map((request) => (
+                    <RequestCard
+                      request={request}
+                      key={request._id}
+                      style={"bg-red-200"}
+                    />
+                  ))}
+              </>
+            ) : (
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                There are no new requests
+              </h2>
+            )}
+          </div>
+          <div className="mt-4">
+            {processingRequests.length > 0 ? (
+              <>
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  Processing Requests
+                </h2>
+                {processingRequests &&
+                  processingRequests.map((request) => (
+                    <RequestCard
+                      request={request}
+                      key={request._id}
+                      style={""}
+                    />
+                  ))}
+              </>
+            ) : (
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                There are no requests being proceesed
+              </h2>
+            )}
+          </div>
+          <div className="mt-4">
+            {issueRequests.length > 0 ? (
+              <>
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  Requests with issues
+                </h2>
+                {issueRequests &&
+                  issueRequests.map((request) => (
+                    <RequestCard
+                      request={request}
+                      key={request._id}
+                      style="bg-red-200"
+                    />
+                  ))}
+              </>
+            ) : (
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                There are no requests being proceesed
+              </h2>
+            )}
+          </div>
+
+          <div className="mt-4">
+            {inTransitRequests.length > 0 ? (
+              <>
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  In transit
+                </h2>
+                {inTransitRequests &&
+                  inTransitRequests.map((request) => (
+                    <RequestCard request={request} key={request._id} style="" />
+                  ))}
+              </>
+            ) : (
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                There are no requests in transit
+              </h2>
+            )}
+          </div>
+
+          <div className="mt-4">
+            <>
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                All requests for your store
+              </h2>
+              {filteredRequsts &&
+                filteredRequsts.map((request) => (
+                  <RequestCard request={request} key={request._id} style="" />
+                ))}
+            </>
+          </div>
         </div>
-      </div>
-      <div>
-        <h2 className="mt-10 text-base font-semibold leading-7 text-gray-900">
-          Orders finished picking and ready for IBT + posting out
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {requestsToPost.length > 0 ? (
-            requestsToPost.map((request) => (
-              <RequestUpdateCard
-                key={request._id}
-                request={request}
-                handleSelect={handleSelect}
-                updateOneStoreRequest={updateOneStoreRequest}
-              />
-            ))
-          ) : (
-            <div className="flex w-full justify-center bg-gray-300 p-5">
-              <p className="">There are no requests to post out!</p>
-            </div>
-          )}
-        </div>
-      </div>
-      <div>
-        <h2 className="mt-10 text-base font-semibold leading-7 text-gray-900">
-          Archived Orders / things already posted
-        </h2>
-        <div className="flex flex-wrap gap-2">
-          {requests &&
-            requests
-              .filter((request) => request.status === "posted")
-              .map((request) => (
-                <RequestCardArchived key={request._id} request={request} />
-              ))}
-        </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }

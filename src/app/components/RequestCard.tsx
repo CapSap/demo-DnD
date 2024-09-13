@@ -6,29 +6,29 @@ import { Fragment } from "react";
 
 export default function RequestCard({
   request,
-  handleSelect,
+  style,
 }: {
   request: IStoreRequest;
-  handleSelect: (request: IStoreRequest) => void;
+  style: string;
 }) {
   return (
-    <div className="m-2 min-w-96 justify-center border-2 border-slate-400 p-2">
-      <div className="flex items-center rounded-lg bg-pink-200 hover:bg-pink-300 active:bg-pink-400">
-        <input
-          id={request._id}
-          className="m-2 scale-150"
-          type="checkbox"
-          onClick={() => handleSelect(request)}
-        />
-        <label className="ml-2 w-full" htmlFor={request._id}>
-          Click me to pick this order
-        </label>
-      </div>
+    <div
+      className={`m-2 min-w-96 justify-center border-2 border-slate-400 p-2 ${style}`}
+    >
       <p>
-        Requesting Store: <strong>{request.requestingStore}</strong>
+        Request Status: <strong>{request.status}</strong>
       </p>
+
       <p>
         Customer Name: <strong>{request.name}</strong>
+      </p>
+
+      <p>
+        Customer Email: <strong>{request.email}</strong>
+      </p>
+
+      <p>
+        Customer Phone: <strong>{request.phone}</strong>
       </p>
 
       <ul className="list-disc pl-6">
@@ -38,10 +38,29 @@ export default function RequestCard({
               {item.quantity} x {item.sku}
             </p>
             <p>{item.description}</p>
-            <p>Qty picked: {item.quantityPicked}</p>
           </li>
         ))}
       </ul>
+      {request.tracking ? (
+        <div className="flex gap-2">
+          <p>
+            Tracking number: <strong>{request.tracking}</strong>
+          </p>
+          <a
+            className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+            href={`https://auspost.com.au/mypost/track/details/${request.tracking}`}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Tracking link
+          </a>
+        </div>
+      ) : null}
+      {request.ibt ? (
+        <p>
+          IBT: <strong>{request.ibt}</strong>
+        </p>
+      ) : null}
     </div>
   );
 }

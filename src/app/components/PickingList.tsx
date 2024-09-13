@@ -135,10 +135,10 @@ export default function PickingList({
       }
       // if no error set message, pause and then navigate to dashboard
       setMessage(
-        `${resultObject.modifiedCount} of ${ordersBeingPicked.length} orders updated successfully. Navigating to dashboard...`,
+        `${resultObject.modifiedCount} of ${ordersBeingPicked.length} orders updated successfully. Navigating to pick and dispatch page...`,
       );
       setSubmitAttempted(false);
-      setTimeout(() => router.push("/dashboard"), 4000);
+      setTimeout(() => router.push("/pick-and-dispatch"), 4000);
     }
   }
 
@@ -158,20 +158,27 @@ export default function PickingList({
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) + 1).toString(),
-            itemStatus: (item.quantityPicked === item.quantity
+            itemStatus: (Number(item.quantityPicked + 1).toString() ===
+            item.quantity
               ? "fully picked"
-              : "new") as ItemStatus,
+              : item.itemStatus) as ItemStatus,
           };
         } else {
           return item;
         }
       });
 
+      const orderStatus = updatedItems.every(
+        (item) => item.itemStatus === "fully picked",
+      )
+        ? "ready to post"
+        : "issue picking";
+
       // create a new order with updated scan number
       const updatedOrder = {
         ...prev[orderIndex],
         items: updatedItems,
-        status: "new" as RequestStatus,
+        status: orderStatus as RequestStatus,
       };
 
       const updatedState = [
