@@ -63,17 +63,76 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
       ) : (
         <div className="mt-4">
           <div>
-            <h2>Summary</h2>
+            <h2 className="text-base font-semibold leading-7 text-gray-900">
+              Summary
+            </h2>
             <p>Numer of new/untouched requests: {newRequests.length}</p>
             <p>Numer of in progress requests: {processingRequests.length}</p>
             <p>Numer of in transit requests: {inTransitRequests.length}</p>
           </div>
-          <div>
-            <h2>New requests</h2>
-            {newRequests &&
-              newRequests.map((request) => (
-                <RequestCard request={request} key={request._id} />
-              ))}
+          <div className="mt-4">
+            {newRequests.length > 0 ? (
+              <>
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  New requests
+                </h2>
+                {newRequests &&
+                  newRequests.map((request) => (
+                    <RequestCard request={request} key={request._id} />
+                  ))}
+              </>
+            ) : (
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                There are no new requests
+              </h2>
+            )}
+          </div>
+          <div className="mt-4">
+            {processingRequests.length > 0 ? (
+              <>
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  Processing Requests
+                </h2>
+                {processingRequests &&
+                  processingRequests.map((request) => (
+                    <RequestCard request={request} key={request._id} />
+                  ))}
+              </>
+            ) : (
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                There are no requests being proceesed
+              </h2>
+            )}
+          </div>
+
+          <div className="mt-4">
+            {inTransitRequests.length > 0 ? (
+              <>
+                <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  In transit
+                </h2>
+                {inTransitRequests &&
+                  inTransitRequests.map((request) => (
+                    <RequestCard request={request} key={request._id} />
+                  ))}
+              </>
+            ) : (
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                There are no requests in transit
+              </h2>
+            )}
+          </div>
+
+          <div className="mt-4">
+            <>
+              <h2 className="text-base font-semibold leading-7 text-gray-900">
+                All requests for your store
+              </h2>
+              {filteredRequsts &&
+                filteredRequsts.map((request) => (
+                  <RequestCard request={request} key={request._id} />
+                ))}
+            </>
           </div>
         </div>
       )}
