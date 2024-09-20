@@ -48,7 +48,10 @@ export default function RequestCard({
       <p>
         Posted on: <strong>{request.updatedAt}</strong>
       </p>
-      <ConfirmButton onConfirm={handleRedoPress} />
+      <ConfirmButton
+        buttonText="Redo IBT or tracking"
+        onConfirm={handleRedoPress}
+      />
     </div>
   );
 }
