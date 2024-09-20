@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-const ConfirmButton = ({ onConfirm }: { onConfirm: () => {} }) => {
+const ConfirmButton = ({
+  buttonText,
+  onConfirm,
+}: {
+  buttonText: string;
+  onConfirm: () => {};
+}) => {
   const [confirming, setConfirming] = useState(false);
 
   const handleClick = () => {
@@ -22,7 +28,7 @@ const ConfirmButton = ({ onConfirm }: { onConfirm: () => {} }) => {
         onClick={handleClick}
         className="rounded bg-orange-500 px-2 py-1 text-sm text-white hover:bg-yellow-700"
       >
-        {confirming ? "Are you sure?" : "Redo tracking or ibt"}
+        {confirming ? "Are you sure?" : buttonText}
       </button>
       {confirming && (
         <button

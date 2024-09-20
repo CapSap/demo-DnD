@@ -3,6 +3,7 @@
 import { HydratedDocument } from "mongoose";
 import { IStoreRequest, Item } from "../types/types";
 import { Fragment, useState } from "react";
+import ConfirmButton from "./ConfirmButton";
 
 export default function RequestUpdateCard({
   request,
@@ -42,6 +43,15 @@ export default function RequestUpdateCard({
     }
   }
 
+  async function handleRedoPress() {
+    try {
+      const payload = JSON.stringify({ ...request, status: "issue picking" });
+      const result = await updateOneStoreRequest(payload);
+    } catch (err) {
+      console.error("did not update", err);
+    }
+  }
+
   const isThereUnsavedChanges =
     ibt !== request.ibt || tracking !== request.tracking;
 
@@ -50,6 +60,7 @@ export default function RequestUpdateCard({
       <p>
         Requesting Store: <strong>{request.requestingStore}</strong>
       </p>
+      <ConfirmButton buttonText="Redo Picking" onConfirm={handleRedoPress} />
       <p>
         <span className="select-none">Customer Name: </span>
         <strong>{request.name}</strong>
