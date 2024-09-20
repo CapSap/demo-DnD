@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const ConfirmButton = ({ onConfirm }) => {
+const ConfirmButton = ({ onConfirm }: { onConfirm: () => {} }) => {
   const [confirming, setConfirming] = useState(false);
 
   const handleClick = () => {
