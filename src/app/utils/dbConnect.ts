@@ -121,6 +121,8 @@ export const updateOneStoreRequest = async (request: string) => {
       items: parsedRequest.items.map((item: Item) => convertId(item)),
     };
 
+    console.log("log from update one func", requestWithObjIds);
+
     await dbConnect();
     const result = await StoreRequest.updateOne(
       { _id: requestWithObjIds._id },
@@ -128,6 +130,7 @@ export const updateOneStoreRequest = async (request: string) => {
         $set: {
           ibt: requestWithObjIds.ibt,
           tracking: requestWithObjIds.tracking,
+          status: requestWithObjIds.status,
         },
       },
     );
