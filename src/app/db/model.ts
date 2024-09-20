@@ -9,8 +9,8 @@ const storeRequestSchema = new mongoose.Schema<IStoreRequest>(
     email: String,
     address: String,
     status: { type: String, enum: ["new", "issue picking"], default: "new" },
-    ibt: String,
-    tracking: String,
+    ibt: { type: String, default: "" },
+    tracking: { type: String, default: "" },
     destination: String,
 
     items: [
