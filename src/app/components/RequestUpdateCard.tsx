@@ -44,8 +44,15 @@ export default function RequestUpdateCard({
   }
 
   async function handleRedoPress() {
+    const resetItems = request.items.map((item) => {
+      return { ...item, quantityPicked: 0 };
+    });
     try {
-      const payload = JSON.stringify({ ...request, status: "issue picking" });
+      const payload = JSON.stringify({
+        ...request,
+        status: "issue picking",
+        items: resetItems,
+      });
       const result = await updateOneStoreRequest(payload);
     } catch (err) {
       console.error("did not update", err);

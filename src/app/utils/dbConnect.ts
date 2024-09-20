@@ -129,6 +129,7 @@ export const updateOneStoreRequest = async (request: string) => {
           ibt: requestWithObjIds.ibt,
           tracking: requestWithObjIds.tracking,
           status: requestWithObjIds.status,
+          items: requestWithObjIds.items,
         },
       },
     );
