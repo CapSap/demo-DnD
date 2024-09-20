@@ -29,13 +29,13 @@ export default function RequestUpdateCard({
     }
 
     // update ibt and tracking, and update status if both fields are present
-    const newStatus = ibt && tracking ? "posted" : request.status;
+    const status = ibt && tracking ? "posted" : request.status;
 
     console.log("does this run");
     setIbtError(null);
 
     try {
-      const payload = JSON.stringify({ ...request, ibt, tracking, newStatus });
+      const payload = JSON.stringify({ ...request, ibt, tracking, status });
       const result = await updateOneStoreRequest(payload);
     } catch (err) {
       console.error("did not update", err);
