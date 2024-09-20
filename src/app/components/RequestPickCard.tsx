@@ -3,6 +3,7 @@
 import { HydratedDocument } from "mongoose";
 import { IStoreRequest, Item } from "../types/types";
 import { Fragment } from "react";
+import ConfirmButton from "./ConfirmButton";
 
 export default function RequestPickCard({
   request,
@@ -24,6 +25,8 @@ export default function RequestPickCard({
           Click me to pick this order
         </label>
       </div>
+      <ConfirmButton buttonText="Partially fulfil request" />
+      <ConfirmButton buttonText="Delete request" />
       <p>
         Requesting Store: <strong>{request.requestingStore}</strong>
       </p>
