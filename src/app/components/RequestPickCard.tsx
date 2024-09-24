@@ -5,6 +5,7 @@ import { IStoreRequest, Item } from "../types/types";
 import { Fragment } from "react";
 import ConfirmButton from "./ConfirmButton";
 import DeleteButton from "./DeleteButton";
+import PartialButton from "./PartialButton";
 
 export default function RequestPickCard({
   request,
@@ -30,7 +31,7 @@ export default function RequestPickCard({
           Click me to pick this order
         </label>
       </div>
-      <ConfirmButton
+      <PartialButton
         buttonText="Partially fulfil request"
         onConfirm={() => handlePartial(request)}
       />
