@@ -8,7 +8,12 @@ const storeRequestSchema = new mongoose.Schema<IStoreRequest>(
     requestingStore: String,
     email: String,
     address: String,
-    status: { type: String, enum: ["new", "issue picking"], default: "new" },
+    status: {
+      type: String,
+      enum: ["new", "issue picking", "ready to post", "posted", "deleted"],
+      default: "new",
+    },
+
     ibt: { type: String, default: "" },
     tracking: { type: String, default: "" },
     destination: String,

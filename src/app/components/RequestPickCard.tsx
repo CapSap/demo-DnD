@@ -3,16 +3,20 @@
 import { HydratedDocument } from "mongoose";
 import { IStoreRequest, Item } from "../types/types";
 import { Fragment } from "react";
+import ConfirmButton from "./ConfirmButton";
+import DeleteButton from "./DeleteButton";
 
 export default function RequestPickCard({
   request,
   handleSelect,
+  handleDelete,
 }: {
   request: IStoreRequest;
   handleSelect: (request: IStoreRequest) => void;
+  handleDelete: (request: IStoreRequest) => Promise<void>;
 }) {
   return (
-    <div className="m-2 min-w-96 justify-center border-2 border-slate-400 p-2">
+    <div className="m-2 justify-center border-2 border-slate-400">
       <div className="flex items-center rounded-lg bg-pink-200 hover:bg-pink-300 active:bg-pink-400">
         <input
           id={request._id}
@@ -24,6 +28,11 @@ export default function RequestPickCard({
           Click me to pick this order
         </label>
       </div>
+      <ConfirmButton buttonText="Partially fulfil request" />
+      <DeleteButton
+        buttonText="Delete request"
+        onConfirm={() => handleDelete(request)}
+      />
       <p>
         Requesting Store: <strong>{request.requestingStore}</strong>
       </p>

@@ -1,5 +1,4 @@
 "use client";
-import RequestCard from "./RequestCard";
 import { useContext, useState } from "react";
 import { RequestContext } from "./RequestContext";
 import { useRouter } from "next/navigation";
@@ -46,6 +45,20 @@ export default function PickAndDispatch({
     (request) => request.status === "ready to post",
   );
 
+  const deletedRequests = requests.filter(
+    (request) => request.status == "deleted",
+  );
+
+  async function handleDelete(request: IStoreRequest) {
+    try {
+      const payload = JSON.stringify({ ...request, status: "deleted" });
+
+      const res = await updateOneStoreRequest(payload);
+    } catch (err) {
+      console.error("did not update", err);
+    }
+  }
+
   return (
     <>
       <div>
@@ -63,13 +76,14 @@ export default function PickAndDispatch({
         <h2 className="text-base font-semibold leading-7 text-gray-900">
           Orders TODO
         </h2>
-        <div className="flex flex-wrap gap-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           {requestsToPick.length > 0 ? (
             requestsToPick.map((request) => (
               <RequestPickCard
                 key={request._id}
                 request={request}
                 handleSelect={handleSelect}
+                handleDelete={handleDelete}
               />
             ))
           ) : (
@@ -83,7 +97,8 @@ export default function PickAndDispatch({
         <h2 className="mt-10 text-base font-semibold leading-7 text-gray-900">
           Orders finished picking and ready for IBT + posting out
         </h2>
-        <div className="flex flex-wrap gap-2">
+
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           {requestsToPost.length > 0 ? (
             requestsToPost.map((request) => (
               <RequestUpdateCard
@@ -104,7 +119,8 @@ export default function PickAndDispatch({
         <h2 className="mt-10 text-base font-semibold leading-7 text-gray-900">
           Archived Orders / things already posted
         </h2>
-        <div className="flex flex-wrap gap-2">
+
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           {requests &&
             requests
               .filter((request) => request.status === "posted")
@@ -115,6 +131,20 @@ export default function PickAndDispatch({
                   updateOneStoreRequest={updateOneStoreRequest}
                 />
               ))}
+        </div>
+        <h2 className="mt-10 text-base font-semibold leading-7 text-gray-900">
+          Deleted orders (requests that were not able to be fufilled)
+        </h2>
+
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          {deletedRequests &&
+            deletedRequests.map((request) => (
+              <RequestCardArchived
+                key={request._id}
+                request={request}
+                updateOneStoreRequest={updateOneStoreRequest}
+              />
+            ))}
         </div>
       </div>
     </>

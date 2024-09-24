@@ -45,7 +45,8 @@ export type RequestStatus =
   | "new"
   | "issue picking"
   | "ready to post"
-  | "posted";
+  | "posted"
+  | "deleted";
 
 export type IPartialStoreRequest = Partial<
   Omit<IStoreRequest, "_id" | "items" | "status">
