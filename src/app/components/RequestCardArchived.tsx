@@ -46,7 +46,7 @@ export default function RequestCard({
         Tracking: <strong>{request.tracking}</strong>
       </p>
       <p>
-        Posted on: <strong>{request.updatedAt}</strong>
+        Laste updated: <strong>{request.updatedAt}</strong>
       </p>
       <ConfirmButton
         buttonText="Redo IBT or tracking"
