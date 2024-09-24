@@ -28,7 +28,7 @@ const ConfirmButton = ({
         onClick={handleClick}
         className="rounded bg-red-600 px-2 py-1 text-sm text-white hover:bg-red-800 active:bg-red-950"
       >
-        {confirming ? "Are you sure?" : buttonText}
+        {confirming ? "Are you sure? This cannot be undone!" : buttonText}
       </button>
       {confirming && (
         <button
