@@ -46,6 +46,10 @@ export default function PickAndDispatch({
     (request) => request.status === "ready to post",
   );
 
+  const deletedRequests = requests.filter(
+    (request) => request.status == "deleted",
+  );
+
   return (
     <>
       <div>
@@ -70,6 +74,7 @@ export default function PickAndDispatch({
                 key={request._id}
                 request={request}
                 handleSelect={handleSelect}
+                updateOneStoreRequest={updateOneStoreRequest}
               />
             ))
           ) : (
@@ -115,6 +120,19 @@ export default function PickAndDispatch({
                   updateOneStoreRequest={updateOneStoreRequest}
                 />
               ))}
+        </div>
+        <h2 className="mt-10 text-base font-semibold leading-7 text-gray-900">
+          Deleted Requests (not fufilled)
+        </h2>
+        <div className="flex flex-wrap gap-2">
+          {deletedRequests &&
+            deletedRequests.map((request) => (
+              <RequestCardArchived
+                key={request._id}
+                request={request}
+                updateOneStoreRequest={updateOneStoreRequest}
+              />
+            ))}
         </div>
       </div>
     </>
