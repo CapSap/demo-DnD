@@ -10,10 +10,12 @@ export default function RequestPickCard({
   request,
   handleSelect,
   handleDelete,
+  handlePartial,
 }: {
   request: IStoreRequest;
   handleSelect: (request: IStoreRequest) => void;
   handleDelete: (request: IStoreRequest) => Promise<void>;
+  handlePartial: (request: IStoreRequest) => Promise<void>;
 }) {
   return (
     <div className="m-2 justify-center border-2 border-slate-400">
@@ -28,7 +30,10 @@ export default function RequestPickCard({
           Click me to pick this order
         </label>
       </div>
-      <ConfirmButton buttonText="Partially fulfil request" />
+      <ConfirmButton
+        buttonText="Partially fulfil request"
+        onConfirm={() => handlePartial(request)}
+      />
       <DeleteButton
         buttonText="Delete request"
         onConfirm={() => handleDelete(request)}
