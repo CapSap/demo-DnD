@@ -16,7 +16,7 @@ export default function RequestPickCard({
   handleDelete: (request: IStoreRequest) => Promise<void>;
 }) {
   return (
-    <div className="m-2 min-w-96 justify-center border-2 border-slate-400 p-2">
+    <div className="m-2 justify-center border-2 border-slate-400">
       <div className="flex items-center rounded-lg bg-pink-200 hover:bg-pink-300 active:bg-pink-400">
         <input
           id={request._id}

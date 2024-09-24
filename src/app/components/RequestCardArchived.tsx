@@ -20,7 +20,7 @@ export default function RequestCard({
     }
   }
   return (
-    <div id={request._id} className="min-w-96 border-2 border-slate-400 p-2">
+    <div id={request._id} className="border-2 border-slate-400 p-2">
       <p>
         Requesting Store: <strong>{request.requestingStore}</strong>
       </p>
@@ -46,7 +46,7 @@ export default function RequestCard({
         Tracking: <strong>{request.tracking}</strong>
       </p>
       <p>
-        Laste updated: <strong>{request.updatedAt}</strong>
+        Last updated: <strong>{request.updatedAt}</strong>
       </p>
       <ConfirmButton
         buttonText="Redo IBT or tracking"
