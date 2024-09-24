@@ -62,6 +62,15 @@ export default function RequestUpdateCard({
   const isThereUnsavedChanges =
     ibt !== request.ibt || tracking !== request.tracking;
 
+  const itemsBeingPosted = request.items.filter(
+    (item) => Number(item.quantityPicked) > 0,
+  );
+
+  const itemsNotPosted = request.items.filter(
+    (item) => item.quantity !== item.quantityPicked,
+  );
+
+  console.log("not posted", itemsNotPosted);
   return (
     <div id={request._id} className="border-2 border-slate-400 p-2">
       <p>
@@ -72,18 +81,47 @@ export default function RequestUpdateCard({
         <span className="select-none">Customer Name: </span>
         <strong>{request.name}</strong>
       </p>
+      <div className="">
+        <p>Items being posted: </p>
+        <ul className="list-disc pl-6">
+          {itemsBeingPosted.map((item: Item, i) => (
+            <li
+              key={item._id}
+              className={`p-2 ${i % 2 === 0 ? "bg-green-200" : "bg-green-300"}`}
+            >
+              <p>
+                {item.quantityPicked} x {item.sku}
+              </p>
+              <p>{item.description}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {itemsNotPosted.length > 0 ? (
+        <div className="">
+          <p>
+            Items <strong>NOT</strong> being posted:{" "}
+          </p>
+          <ul className="list-disc pl-6">
+            {itemsNotPosted &&
+              itemsNotPosted.map((item, i) => (
+                <li
+                  key={"not" + item._id}
+                  className={`p-2 ${i % 2 === 0 ? "bg-orange-200" : "bg-orange-300"}`}
+                >
+                  <p>
+                    {Number(item.quantity) - Number(item.quantityPicked)} x{" "}
+                    {item.sku}
+                  </p>
+                  <p>{item.description}</p>
 
-      <ul className="list-disc pl-6">
-        {request.items.map((item: Item) => (
-          <li key={item._id}>
-            <p>
-              {item.quantity} x {item.sku}
-            </p>
-            <p>{item.description}</p>
-            <p>Qty picked: {item.quantityPicked}</p>
-          </li>
-        ))}
-      </ul>
+                  <p>Qty requested: {item.quantity}</p>
+                  <p>Qty picked: {item.quantityPicked}</p>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ) : null}
       <div className="m-2 p-2">
         <p className="text-xl">
           <span className="select-none">Address: </span>
