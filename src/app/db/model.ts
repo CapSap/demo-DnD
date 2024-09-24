@@ -10,7 +10,14 @@ const storeRequestSchema = new mongoose.Schema<IStoreRequest>(
     address: String,
     status: {
       type: String,
-      enum: ["new", "issue picking", "ready to post", "posted", "deleted"],
+      enum: [
+        "new",
+        "issue picking",
+        "ready to post",
+        "ready to partial post",
+        "posted",
+        "deleted",
+      ],
       default: "new",
     },
 
