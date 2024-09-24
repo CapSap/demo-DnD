@@ -50,6 +50,16 @@ export default function PickAndDispatch({
     (request) => request.status == "deleted",
   );
 
+  async function handleDelete(request: IStoreRequest) {
+    try {
+      const payload = JSON.stringify({ ...request, status: "deleted" });
+
+      const res = await updateOneStoreRequest(payload);
+    } catch (err) {
+      console.error("did not update", err);
+    }
+  }
+
   return (
     <>
       <div>
@@ -74,7 +84,7 @@ export default function PickAndDispatch({
                 key={request._id}
                 request={request}
                 handleSelect={handleSelect}
-                updateOneStoreRequest={updateOneStoreRequest}
+                handleDelete={handleDelete}
               />
             ))
           ) : (
