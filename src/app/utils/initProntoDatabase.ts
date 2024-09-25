@@ -39,7 +39,7 @@ export async function initializeProntoData(): Promise<void> {
         for (const file of files) {
           if (path.extname(file) === ".csv") {
             // Return the full path to the file
-            resolve(path.join(process.cwd(), file));
+            resolve(path.join(directoryPath, file));
             return;
           }
         }
