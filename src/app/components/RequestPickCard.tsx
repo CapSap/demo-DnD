@@ -5,16 +5,23 @@ import { IStoreRequest, Item } from "../types/types";
 import { Fragment } from "react";
 import ConfirmButton from "./ConfirmButton";
 import DeleteButton from "./DeleteButton";
+import PartialButton from "./PartialButton";
 
 export default function RequestPickCard({
   request,
   handleSelect,
   handleDelete,
+  handlePartial,
 }: {
   request: IStoreRequest;
   handleSelect: (request: IStoreRequest) => void;
   handleDelete: (request: IStoreRequest) => Promise<void>;
+  handlePartial: (request: IStoreRequest) => Promise<void>;
 }) {
+  const atLeastOneItemPicked = request.items.some(
+    (item) => Number(item.quantityPicked) > 0,
+  );
+
   return (
     <div className="m-2 justify-center border-2 border-slate-400">
       <div className="flex items-center rounded-lg bg-pink-200 hover:bg-pink-300 active:bg-pink-400">
@@ -28,7 +35,12 @@ export default function RequestPickCard({
           Click me to pick this order
         </label>
       </div>
-      <ConfirmButton buttonText="Partially fulfil request" />
+      {atLeastOneItemPicked ? (
+        <PartialButton
+          buttonText="Partially fulfil request"
+          onConfirm={() => handlePartial(request)}
+        />
+      ) : null}
       <DeleteButton
         buttonText="Delete request"
         onConfirm={() => handleDelete(request)}

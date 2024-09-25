@@ -45,6 +45,7 @@ export type RequestStatus =
   | "new"
   | "issue picking"
   | "ready to post"
+  | "ready to partial post"
   | "posted"
   | "deleted";
 

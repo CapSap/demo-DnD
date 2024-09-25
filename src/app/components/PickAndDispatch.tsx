@@ -42,7 +42,9 @@ export default function PickAndDispatch({
   );
 
   const requestsToPost = requests.filter(
-    (request) => request.status === "ready to post",
+    (request) =>
+      request.status === "ready to post" ||
+      request.status === "ready to partial post",
   );
 
   const deletedRequests = requests.filter(
@@ -52,6 +54,19 @@ export default function PickAndDispatch({
   async function handleDelete(request: IStoreRequest) {
     try {
       const payload = JSON.stringify({ ...request, status: "deleted" });
+
+      const res = await updateOneStoreRequest(payload);
+    } catch (err) {
+      console.error("did not update", err);
+    }
+  }
+
+  async function handlePartial(request: IStoreRequest) {
+    try {
+      const payload = JSON.stringify({
+        ...request,
+        status: "ready to partial post",
+      });
 
       const res = await updateOneStoreRequest(payload);
     } catch (err) {
@@ -84,6 +99,7 @@ export default function PickAndDispatch({
                 request={request}
                 handleSelect={handleSelect}
                 handleDelete={handleDelete}
+                handlePartial={handlePartial}
               />
             ))
           ) : (
