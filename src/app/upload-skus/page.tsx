@@ -33,14 +33,10 @@ export default function UploadSkusPage() {
 
           const file = inputFileRef.current.files[0];
 
-          const newBlob = await upload(
-            "test-folder/pronto-database.csv",
-            file,
-            {
-              access: "public",
-              handleUploadUrl: "/api/upload",
-            },
-          );
+          const newBlob = await upload("prontoData/pronto-database.csv", file, {
+            access: "public",
+            handleUploadUrl: "/api/upload",
+          });
 
           setBlob(newBlob);
         }}
