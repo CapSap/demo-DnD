@@ -1,5 +1,5 @@
 import Database from "better-sqlite3";
-import fs from "node:fs/promises";
+import fs from "fs";
 import csv from "csv-parser";
 import path from "path";
 
@@ -7,7 +7,7 @@ export async function initializeProntoData(): Promise<void> {
   // Check if the file exists
   const filePath = "src/app/api/prontoDatabase/pronto-database.csv";
 
-  const fileExists = await fs
+  const fileExists = await fs.promises
     .access(filePath)
     .then(() => true)
     .catch(() => false);
