@@ -39,6 +39,12 @@ export default function RootLayout({
             >
               Create a new request
             </Link>
+            <Link
+              href={"/upload-skus"}
+              className="p-2 hover:bg-green-400 hover:font-bold active:bg-green-600"
+            >
+              Upload Skus
+            </Link>
           </ul>
         </nav>
         <RequestProvider>{children}</RequestProvider>
