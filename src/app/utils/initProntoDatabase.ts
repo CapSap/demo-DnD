@@ -5,7 +5,7 @@ import path from "path";
 
 export async function initializeProntoData(): Promise<void> {
   // Check if the file exists
-  const filePath = "src/app/api/prontoDatabase/pronto-database.csv";
+  /*   const filePath = "src/app/api/prontoDatabase/pronto-database.csv";
 
   const fileExists = await fs.promises
     .access(filePath)
@@ -15,6 +15,40 @@ export async function initializeProntoData(): Promise<void> {
   if (!fileExists) {
     console.log("csv file does not exist. Exiting function.");
     return;
+  } */
+
+  // get the filename of the csv file
+
+  function findCsvFile(): Promise<string | false> {
+    return new Promise((resolve, reject) => {
+      // Read the directory
+      fs.readdir(path.join(process.cwd(), "prontoData/"), (err, files) => {
+        if (err) {
+          reject(`Error reading directory: ${err}`);
+          return;
+        }
+
+        // Loop through the files to find the first CSV file
+        for (const file of files) {
+          if (path.extname(file) === ".csv") {
+            // Return the full path to the file
+            resolve(path.join(process.cwd(), file));
+            return;
+          }
+        }
+        // If no CSV file is found
+        resolve(false);
+      });
+    });
+  }
+
+  const prontoCsvFileName = await findCsvFile();
+
+  if (!prontoCsvFileName) {
+    console.log("csv file does not exist. Exiting function.");
+    return;
+  } else {
+    console.log(prontoCsvFileName);
   }
 
   const db = new Database("prontoData.db");
@@ -136,7 +170,7 @@ export async function initializeProntoData(): Promise<void> {
     );
 
     return new Promise<void>((resolve, reject) => {
-      fs.createReadStream(csvFilePath)
+      fs.createReadStream(prontoCsvFileName as string)
         .pipe(csv())
         .on("data", (data) => results.push(data))
         .on("end", () => {
