@@ -68,7 +68,7 @@ export async function initializeProntoData(): Promise<void> {
         process.cwd(),
         "src/app/api/prontoDatabase/pronto-database.csv",
       );
-      fs.createReadStream(csvFilePath)
+      fs.createReadStream(prontoCsvFileName)
         .pipe(csv())
         .on("data", () => csvRowCount++)
         .on("end", () => resolve(csvRowCount))
