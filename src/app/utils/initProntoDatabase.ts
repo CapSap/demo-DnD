@@ -21,8 +21,15 @@ export async function initializeProntoData(): Promise<void> {
 
   function findCsvFile(): Promise<string | false> {
     return new Promise((resolve, reject) => {
+      const directoryPath = path.join(process.cwd(), "prontoData/");
+
+      // Check if the directory exists
+      if (!fs.existsSync(directoryPath)) {
+        resolve(false); // Return false if the directory does not exist
+        return;
+      }
       // Read the directory
-      fs.readdir(path.join(process.cwd(), "prontoData/"), (err, files) => {
+      fs.readdir(directoryPath, (err, files) => {
         if (err) {
           reject(`Error reading directory: ${err}`);
           return;
