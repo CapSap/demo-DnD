@@ -36,7 +36,10 @@ export default function UploadSkusPage() {
           const newBlob = await upload("prontoData/pronto-database.csv", file, {
             access: "public",
             handleUploadUrl: "/api/upload",
+            contentType: "text/csv",
           });
+
+          console.log("new blobl", newBlob);
 
           setBlob(newBlob);
         }}

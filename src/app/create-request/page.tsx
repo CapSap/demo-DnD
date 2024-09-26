@@ -28,9 +28,14 @@ export default async function CreateRequestPage() {
 
   console.log("testing", testing);
 
+  console.log("where is this page running?");
+
   return (
     <div>
-      <CreateRequestForm createStoreRequest={createStoreRequest} />
+      <CreateRequestForm
+        createStoreRequest={createStoreRequest}
+        test={testing}
+      />
     </div>
   );
 }

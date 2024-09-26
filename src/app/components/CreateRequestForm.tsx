@@ -6,9 +6,13 @@ import StockChecker from "./StockChecker";
 
 export default function CreateRequestForm({
   createStoreRequest,
+  test,
 }: {
   createStoreRequest: (request: IPartialStoreRequest) => Promise<string>;
+  test: string;
 }) {
+  console.log(test);
+
   const selectInput = useRef<HTMLSelectElement>(null);
 
   const [requestingStore, setRequestingStore] = useState("default");
