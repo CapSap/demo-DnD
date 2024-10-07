@@ -23,7 +23,6 @@ if (!cached) {
 }
 
 async function dbConnect() {
-  console.log("con running");
   if (cached.conn) {
     return cached.conn;
   }
@@ -37,7 +36,6 @@ async function dbConnect() {
   }
   try {
     cached.conn = await cached.promise;
-    console.log("db conn succ");
   } catch (e) {
     cached.promise = null;
     throw e;
@@ -50,7 +48,6 @@ export const createStoreRequest = async (
   storeRequest: IPartialStoreRequest,
 ) => {
   "use server";
-  console.log("log from query function", storeRequest);
   try {
     await dbConnect();
     // throw new Error("could not write to db");
@@ -134,8 +131,6 @@ export const updateOneStoreRequest = async (request: string) => {
       },
     );
 
-    console.log(result.modifiedCount); // Output the number of modified documents
-
     return JSON.stringify(result); // Return the result
   } catch (err) {
     const error = err as Error; // Type assertion for better error handling
@@ -178,12 +173,9 @@ export const updateManyStoreRequests = async (request: string) => {
         },
       };
     });
-    console.log(JSON.stringify(requestsWithObjIds));
-    console.log(JSON.stringify(bulkOps));
 
     await dbConnect();
     const result = await StoreRequest.bulkWrite(bulkOps);
-    console.log(result.modifiedCount);
 
     return JSON.stringify(result);
   } catch (err) {

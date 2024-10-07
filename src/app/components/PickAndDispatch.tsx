@@ -31,7 +31,6 @@ export default function PickAndDispatch({
 
   function handleButtonClick() {
     // save context
-    console.log("click");
     setRequests(selected);
     // nav to picking
     router.push("/picking");

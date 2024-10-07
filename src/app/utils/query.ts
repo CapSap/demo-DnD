@@ -15,12 +15,9 @@ type ProntoData = {
 };
 
 export function exactSearch(searchString: string) {
-  console.log("exact search func running");
-
   const db = new Database("prontoData.db");
 
   const sanityCheckows = db.prepare("SELECT * FROM prontoData LIMIT 1").all();
-  // console.log("Database Records:", sanityCheckows);
 
   const statement = db.prepare(`
     SELECT ItemCode, Style, Colour, Size, Gender 
@@ -31,14 +28,11 @@ export function exactSearch(searchString: string) {
 
   const rows = statement.all(searchString, searchString) as ProntoData[];
 
-  console.log("rows result", rows);
-
   db.close();
   return rows;
 }
 
 export function likeSearch(searchString: string) {
-  console.log("like func running");
   const db = new Database("prontoData.db");
 
   db.exec(`DROP TABLE IF EXISTS prontoData_fts;`);
@@ -63,7 +57,6 @@ export function likeSearch(searchString: string) {
   // Check if the FTS table contains data
   const checkStatement = db.prepare(`SELECT * FROM prontoData_fts LIMIT 10 `);
   const checkRows = checkStatement.all();
-  console.log("FTS Data:", checkRows);
 
   const statement = db.prepare(`
   SELECT prontoData.Style, prontoData.colour, prontoData.Size, prontoData.Gender, prontoData.ItemCode, combined, bm25(prontoData_fts) as rank
@@ -79,8 +72,6 @@ export function likeSearch(searchString: string) {
     .filter((term) => term.trim() !== "") // Filter out empty terms
     .map((term) => `${term.trim()}*`) // Add the wildcard operator
     .join(" "); // Join terms with a single space
-
-  console.log("formatted", formattedSearchString);
 
   // Execute the query with the formatted search string
   const rows = statement.all(`${formattedSearchString}`) as ProntoData[];

@@ -182,9 +182,6 @@ export async function initializeProntoData(): Promise<void> {
         .on("data", (data) => results.push(data))
         .on("end", () => {
           insertMany(results);
-          console.log(
-            "CSV file successfully processed and data inserted into the database.",
-          );
           db.close();
           resolve();
         })

@@ -11,8 +11,6 @@ export default function CreateRequestForm({
   createStoreRequest: (request: IPartialStoreRequest) => Promise<string>;
   test: string;
 }) {
-  console.log(test);
-
   const selectInput = useRef<HTMLSelectElement>(null);
 
   const [requestingStore, setRequestingStore] = useState("default");
@@ -71,7 +69,6 @@ export default function CreateRequestForm({
   }
 
   async function handleFormSubmit() {
-    console.log("form submit running");
     if (requestingStore === "default") {
       handleSubmitWithDefaultLocation();
       return;

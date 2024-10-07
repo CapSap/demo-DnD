@@ -39,8 +39,6 @@ export default function UploadSkusPage() {
             contentType: "text/csv",
           });
 
-          console.log("new blobl", newBlob);
-
           setBlob(newBlob);
         }}
       >

@@ -14,7 +14,6 @@ export default function RequestCard({
     try {
       const payload = JSON.stringify({ ...request, status: "ready to post" });
       const result = await updateOneStoreRequest(payload);
-      console.log("result", payload, result);
     } catch (err) {
       console.error("did not update", err);
     }

@@ -25,7 +25,6 @@ export function Dashboard({ requests }: { requests: IStoreRequest[] }) {
     (request) => request.status === "posted",
   );
 
-  console.log(filteredRequsts);
   return (
     <div>
       <div>

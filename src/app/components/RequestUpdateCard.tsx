@@ -22,8 +22,6 @@ export default function RequestUpdateCard({
   const [ibtError, setIbtError] = useState<string | null>(null);
 
   async function handleUpdate() {
-    console.log("does ibt pass the test? ", ibt && /^d{7}$/.test(ibt));
-
     if (ibt && !/^\d{7}$/.test(ibt)) {
       setIbtError("IBT must be a 7-digit number.");
       return;
@@ -32,7 +30,6 @@ export default function RequestUpdateCard({
     // update ibt and tracking, and update status if both fields are present
     const status = ibt && tracking ? "posted" : request.status;
 
-    console.log("does this run");
     setIbtError(null);
 
     try {
@@ -70,7 +67,6 @@ export default function RequestUpdateCard({
     (item) => item.quantity !== item.quantityPicked,
   );
 
-  console.log("not posted", itemsNotPosted);
   return (
     <div id={request._id} className="border-2 border-slate-400 p-2">
       <p>
