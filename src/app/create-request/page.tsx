@@ -14,27 +14,45 @@ export default async function CreateRequestPage() {
     return `Store request created successfully!`;
   }
 
+  console.time("blob fetch`");
+
+  // okay this is working. what to do now?
+  // get the most recently uploaded blob (or delete/ overwrite blobs)
+  // i can either sort the blob list, or overwrite the blob on upload so that there is only 1 blob ever.
+  // rename the variables used to pass down to client
+  // parse the csv file on the client side, and do the queries
+
+  // im not sure if i want to pass the csv down as props.
+  // could i create a server action here and pass the function down (no i cant- blobs larger than 2mb cannot be cached.)
+  // how to get search string from client?
+
+  // so that im not sending the csv on every component render?
+
   const data = await list();
   const dlUrl = data.blobs[0].downloadUrl;
-  console.log("BLOB DATA");
 
   async function fetchCSV() {
-    const res = await fetch(dlUrl);
-    const csvData = await res.text();
-    return csvData;
+    // split download in 2 due to 2mb cache limit
+    const resPartOne = await fetch(dlUrl, {
+      headers: { range: "bytes=0-4194304" },
+    });
+    const resPartTwo = await fetch(dlUrl, {
+      headers: { range: "bytes=-4194304" },
+    });
+    const csvDataOne = await resPartOne.text();
+    const csvDataTwo = await resPartTwo.text();
+
+    return csvDataOne + csvDataTwo;
   }
 
-  const testing = await fetchCSV();
-
-  console.log("testing", testing);
-
-  console.log("where is this page running?");
+  const prontoData = await fetchCSV();
+  console.timeEnd("blob fetch`");
 
   return (
     <div>
       <CreateRequestForm
         createStoreRequest={createStoreRequest}
-        test={testing}
+        prontoData={prontoData}
       />
     </div>
   );
