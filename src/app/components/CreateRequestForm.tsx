@@ -3,13 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Item, IPartialStoreRequest, PartialItem } from "../types/types";
 import StockChecker from "./StockChecker";
+import Database from "better-sqlite3";
+import Fuse from "fuse.js";
 
 export default function CreateRequestForm({
   createStoreRequest,
-  test,
+  prontoData,
 }: {
   createStoreRequest: (request: IPartialStoreRequest) => Promise<string>;
-  test: string;
+  prontoData: string;
 }) {
   const selectInput = useRef<HTMLSelectElement>(null);
 
@@ -127,6 +129,33 @@ export default function CreateRequestForm({
       selectInput.current.focus();
     }
   }
+  function csvToJson(csvString) {
+    const rows = csvString.trim().split("\n");
+    const headers = rows[0].split(",");
+
+    const jsonArray = rows.slice(1).map((row) => {
+      const values = row.split(",");
+      const jsonObject = {};
+      headers.forEach((header, index) => {
+        jsonObject[header.trim()] = values[index].trim();
+      });
+      return jsonObject;
+    });
+
+    return jsonArray;
+  }
+
+  const json = csvToJson(prontoData);
+
+  function localSearch(searchString: string) {
+    const fuse = new Fuse(json);
+    console.log("log from local search func", searchString);
+    const localSearchResult = fuse.search(productSearch);
+
+    console.log("local result", localSearchResult);
+  }
+
+  useEffect(() => localSearch(productSearch), [productSearch]);
 
   async function handleSearch(searchString: string) {
     if (!productSearch) {
