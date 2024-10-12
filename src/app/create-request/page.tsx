@@ -28,6 +28,8 @@ export default async function CreateRequestPage() {
 
   // so that im not sending the csv on every component render?
 
+  // running fuse js on client with about a 4mb file makes the client very slow.
+
   const data = await list();
   const dlUrl = data.blobs[0].downloadUrl;
 
