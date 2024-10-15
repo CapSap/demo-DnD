@@ -50,11 +50,29 @@ export default async function CreateRequestPage() {
   const prontoData = await fetchCSV();
   console.timeEnd("blob fetch`");
 
+  function csvToJson(csvString: string) {
+    const rows = csvString.trim().split("\n");
+    const headers = rows[0].split(",");
+
+    const jsonArray = rows.slice(1).map((row) => {
+      const values = row.split(",");
+      const jsonObject = {};
+      headers.forEach((header, index) => {
+        jsonObject[header.trim()] = values[index].trim();
+      });
+      return jsonObject;
+    });
+
+    return jsonArray;
+  }
+
+  const json = csvToJson(prontoData);
+
   return (
     <div>
       <CreateRequestForm
         createStoreRequest={createStoreRequest}
-        prontoData={prontoData}
+        prontoData={json}
       />
     </div>
   );

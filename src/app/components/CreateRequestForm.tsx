@@ -11,7 +11,7 @@ export default function CreateRequestForm({
   prontoData,
 }: {
   createStoreRequest: (request: IPartialStoreRequest) => Promise<string>;
-  prontoData: string;
+  prontoData: {}[];
 }) {
   const selectInput = useRef<HTMLSelectElement>(null);
 
@@ -129,26 +129,9 @@ export default function CreateRequestForm({
       selectInput.current.focus();
     }
   }
-  function csvToJson(csvString) {
-    const rows = csvString.trim().split("\n");
-    const headers = rows[0].split(",");
-
-    const jsonArray = rows.slice(1).map((row) => {
-      const values = row.split(",");
-      const jsonObject = {};
-      headers.forEach((header, index) => {
-        jsonObject[header.trim()] = values[index].trim();
-      });
-      return jsonObject;
-    });
-
-    return jsonArray;
-  }
-
-  const json = csvToJson(prontoData);
 
   function localSearch(searchString: string) {
-    const fuse = new Fuse(json);
+    const fuse = new Fuse(prontoData);
     console.log("log from local search func", searchString);
     const localSearchResult = fuse.search(productSearch);
 
