@@ -56,7 +56,7 @@ export default async function CreateRequestPage() {
 
     const jsonArray = rows.slice(1).map((row) => {
       const values = row.split(",");
-      const jsonObject = {};
+      const jsonObject: { [index: string]: string } = {};
       headers.forEach((header, index) => {
         jsonObject[header.trim()] = values[index].trim();
       });
