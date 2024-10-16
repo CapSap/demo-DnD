@@ -132,10 +132,18 @@ export default function CreateRequestForm({
     }
   }
 
-  function localSearch(searchString: string) {
-    const fuse = new Fuse(prontoData, { keys: ["Style"] });
+  function localFuzzySearch(searchString: string) {
+    const fuseOptions = {
+      keys: [
+        { name: "Style" },
+        { name: "Colour" },
+        // { name: "Size", weight: 1 },
+      ],
+      shouldSort: true,
+    };
+    const fuse = new Fuse(prontoData, fuseOptions);
     console.log("log from local search func", searchString);
-    const localSearchResult = fuse.search(productSearch).slice(0, 10);
+    const localSearchResult = fuse.search(searchString).slice(0, 10);
 
     console.log("local result", localSearchResult);
   }
@@ -143,7 +151,7 @@ export default function CreateRequestForm({
   const handleLocalSearch = useCallback(
     debounce((searchString) => {
       console.log("debounce running");
-      localSearch(searchString);
+      localFuzzySearch(searchString);
     }, 1000),
     [],
   );
