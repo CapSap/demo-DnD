@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Item, IPartialStoreRequest, PartialItem } from "../types/types";
 import StockChecker from "./StockChecker";
 import Database from "better-sqlite3";
 import Fuse from "fuse.js";
+
+import { debounce } from "lodash";
 
 export default function CreateRequestForm({
   createStoreRequest,
@@ -131,14 +133,24 @@ export default function CreateRequestForm({
   }
 
   function localSearch(searchString: string) {
-    const fuse = new Fuse(prontoData);
+    const fuse = new Fuse(prontoData, { keys: ["Style"] });
     console.log("log from local search func", searchString);
-    const localSearchResult = fuse.search(productSearch);
+    const localSearchResult = fuse.search(productSearch).slice(0, 10);
 
     console.log("local result", localSearchResult);
   }
 
-  useEffect(() => localSearch(productSearch), [productSearch]);
+  const handleLocalSearch = useCallback(
+    debounce((searchString) => {
+      console.log("debounce running");
+      localSearch(searchString);
+    }, 1000),
+    [],
+  );
+
+  useEffect(() => {
+    handleLocalSearch(productSearch);
+  }, [handleLocalSearch, productSearch]);
 
   async function handleSearch(searchString: string) {
     if (!productSearch) {
@@ -199,27 +211,6 @@ export default function CreateRequestForm({
       ];
     });
   }
-
-  useEffect(() => {
-    // Clear the previous timeout if the user types again within the delay
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
-    }
-
-    // Set a new timeout to run the search after a delay (e.g., 500ms)
-    debounceTimeout.current = setTimeout(() => {
-      if (productSearch.length > 5) {
-        handleSearch(productSearch);
-      }
-    }, 500);
-
-    // Cleanup function to clear the timeout if the component unmounts
-    return () => {
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
-      }
-    };
-  }, [productSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleDestinationChange(location: string) {
     setDestination(location);
