@@ -1,18 +1,5 @@
 import Database from "better-sqlite3";
-
-type ProntoData = {
-  ID: number;
-  ItemCode: string;
-  GTIN: string;
-  Style: string;
-  Colour: string;
-  Size: string;
-  Gender: string;
-  ItemCategoryCode: string;
-  ItemClassCode: string;
-  ABCClass: string;
-  Brand: string;
-};
+import { ProntoData } from "../types/types";
 
 export function exactSearch(searchString: string) {
   const db = new Database("prontoData.db");
