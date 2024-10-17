@@ -1,15 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Item,
-  IPartialStoreRequest,
-  PartialItem,
-  ProntoCSV,
-} from "../types/types";
+import { IPartialStoreRequest, PartialItem, ProntoCSV } from "../types/types";
 import StockChecker from "./StockChecker";
-import Database from "better-sqlite3";
-import Fuse, { FuseResult } from "fuse.js";
 
 import { debounce } from "lodash";
 
@@ -27,22 +20,21 @@ export default function CreateRequestForm({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [items, setItems] = useState<PartialItem[]>([
-    // { tempID: Date.now(), quantity: "1", sku: "", description: "" },
-  ]);
+  const [items, setItems] = useState<PartialItem[]>([]);
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [destination, setDestination] = useState("");
+
   type SearchResults = {
-    exactResults: ProntoCSV | undefined;
-    likeResults: (FuseResult<ProntoCSV> | undefined)[];
+    likeResults: ProntoCSV[];
+    exactResults: ProntoCSV[];
   };
 
   const [productSearch, setProductSearch] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResults>({
     likeResults: [],
-    exactResults: undefined,
+    exactResults: [],
   });
 
   const [selectedProductID, setSelectedProductID] = useState<string>();
@@ -121,37 +113,8 @@ export default function CreateRequestForm({
     }
   }
 
-  function localExactSearch(searchString: string) {
-    const result = prontoData.find((item) => {
-      return item["Item Code"] === searchString || item.GTIN === searchString;
-    });
-    console.log("exact search results", result);
-    return result;
-  }
-
-  function localFuzzySearch(searchString: string) {
-    const fuseOptions = {
-      keys: [
-        { name: "Style" },
-        { name: "Colour" },
-        // { name: "Size", weight: 1 },
-      ],
-      shouldSort: true,
-    };
-    const fuse = new Fuse(prontoData, fuseOptions);
-    console.log("log from local search func", searchString);
-    const localSearchResult = fuse.search(searchString).slice(0, 10);
-
-    console.log("local result", localSearchResult);
-    return localSearchResult;
-  }
-
   const handleLocalSearch = useCallback(
     debounce((searchString) => {
-      console.log("debounce running");
-      // const exact = localExactSearch(searchString);
-      // const fuzzy = localFuzzySearch(searchString);
-      // setSearchResults({ exactResults: exact, likeResults: fuzzy });
       handleSearch(searchString);
     }, 1000),
     [],
