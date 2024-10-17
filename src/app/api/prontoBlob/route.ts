@@ -9,10 +9,9 @@ export async function GET(request: NextRequest) {
   const searchString = searchParams.get("search") || "";
 
   // Call the query function
-  const exactResults = exactLocalSearch(searchString);
+  // const exactResults = exactLocalSearch(searchString);
 
-  const likeResults = likeLocalSearch(searchString);
+  const likeResults = await likeLocalSearch(searchString);
 
-  console.timeEnd("pronto data route");
-  return NextResponse.json({ exactResults, likeResults });
+  return NextResponse.json({ likeResults });
 }
