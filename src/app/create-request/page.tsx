@@ -1,5 +1,5 @@
 import CreateRequestForm from "../components/CreateRequestForm";
-import { IPartialStoreRequest, IStoreRequest } from "../types/types";
+import { IPartialStoreRequest, IStoreRequest, ProntoCSV } from "../types/types";
 import { createStoreRequest as dbCreate } from "../utils/dbConnect";
 import { list } from "@vercel/blob";
 
@@ -50,15 +50,21 @@ export default async function CreateRequestPage() {
   const prontoData = await fetchCSV();
   console.timeEnd("blob fetch`");
 
-  function csvToJson(csvString: string) {
+  function csvToJson(csvString: string): ProntoCSV[] {
     const rows = csvString.trim().split("\n");
     const headers = rows[0].split(",");
 
     const jsonArray = rows.slice(1).map((row) => {
       const values = row.split(",");
-      const jsonObject: { [index: string]: string } = {};
+      const jsonObject = {
+        Color: "",
+        GTIN: "",
+        "Item Code": "",
+        Size: "",
+        Style: "",
+      };
       headers.forEach((header, index) => {
-        jsonObject[header.trim()] = values[index].trim();
+        jsonObject[header.trim() as keyof ProntoCSV] = values[index].trim();
       });
       return jsonObject;
     });

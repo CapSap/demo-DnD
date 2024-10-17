@@ -69,3 +69,11 @@ export type ProntoData = {
   ABCClass: string;
   Brand: string;
 };
+
+export type ProntoCSV = {
+  Color: string;
+  GTIN: string;
+  ["Item Code"]: string;
+  Size: string;
+  Style: string;
+};
