@@ -59,7 +59,7 @@ export default async function CreateRequestPage() {
       const jsonObject = {
         Colour: "",
         GTIN: "",
-        "Item Code": "",
+        ItemCode: "",
         Size: "",
         Style: "",
       };
