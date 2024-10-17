@@ -1,10 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Item, IPartialStoreRequest, PartialItem } from "../types/types";
+import {
+  Item,
+  IPartialStoreRequest,
+  PartialItem,
+  ProntoCSV,
+} from "../types/types";
 import StockChecker from "./StockChecker";
 import Database from "better-sqlite3";
-import Fuse from "fuse.js";
+import Fuse, { FuseResult } from "fuse.js";
 
 import { debounce } from "lodash";
 
@@ -13,7 +18,7 @@ export default function CreateRequestForm({
   prontoData,
 }: {
   createStoreRequest: (request: IPartialStoreRequest) => Promise<string>;
-  prontoData: {}[];
+  prontoData: ProntoCSV[];
 }) {
   const selectInput = useRef<HTMLSelectElement>(null);
 
@@ -29,34 +34,18 @@ export default function CreateRequestForm({
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [destination, setDestination] = useState("");
-
   type SearchResults = {
-    exactResults: {
-      Style: string;
-      Colour: string;
-      Gender: string;
-      ItemCode: string;
-      Size: string;
-    }[];
-    likeResults: {
-      Style: string;
-      Colour: string;
-      Gender: string;
-      ItemCode: string;
-      Size: string;
-      rank: number;
-    }[];
+    exactResults: ProntoCSV | undefined;
+    likeResults: (FuseResult<ProntoCSV> | undefined)[];
   };
 
   const [productSearch, setProductSearch] = useState("");
-  const [products, setProducts] = useState<SearchResults>({
-    exactResults: [],
+  const [searchResults, setSearchResults] = useState<SearchResults>({
     likeResults: [],
+    exactResults: undefined,
   });
 
   const [selectedProductID, setSelectedProductID] = useState<string>();
-
-  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function handleGetMoreItems() {
     setItems((prevState) => {
@@ -132,6 +121,14 @@ export default function CreateRequestForm({
     }
   }
 
+  function localExactSearch(searchString: string) {
+    const result = prontoData.find((item) => {
+      return item["Item Code"] === searchString || item.GTIN === searchString;
+    });
+    console.log("exact search results", result);
+    return result;
+  }
+
   function localFuzzySearch(searchString: string) {
     const fuseOptions = {
       keys: [
@@ -146,12 +143,16 @@ export default function CreateRequestForm({
     const localSearchResult = fuse.search(searchString).slice(0, 10);
 
     console.log("local result", localSearchResult);
+    return localSearchResult;
   }
 
   const handleLocalSearch = useCallback(
     debounce((searchString) => {
       console.log("debounce running");
-      localFuzzySearch(searchString);
+      // const exact = localExactSearch(searchString);
+      // const fuzzy = localFuzzySearch(searchString);
+      // setSearchResults({ exactResults: exact, likeResults: fuzzy });
+      handleSearch(searchString);
     }, 1000),
     [],
   );
@@ -168,11 +169,11 @@ export default function CreateRequestForm({
 
     // take in user input
     // hit api
-    const response = await fetch(`/api/prontoDatabase?search=${searchString}`);
+    const response = await fetch(`/api/prontoBlob?search=${searchString}`);
     const results = await response.json();
 
     console.log("results", results);
-    setProducts(results);
+    setSearchResults(results);
 
     const firstResult =
       (results.exactResults &&
@@ -190,11 +191,11 @@ export default function CreateRequestForm({
     e.preventDefault();
     console.log("button clicked", selectedProductID);
 
-    const seletecedExact = products.exactResults.find(
+    const seletecedExact = searchResults.exactResults.find(
       (product) => product.ItemCode === selectedProductID,
     );
 
-    const selectedLike = products.likeResults.find(
+    const selectedLike = searchResults.likeResults.find(
       (product) => product.ItemCode === selectedProductID,
     );
 
@@ -379,16 +380,20 @@ export default function CreateRequestForm({
               <option disabled className="p-10">
                 Search for some skus
               </option>
-              {products.likeResults &&
-                products.likeResults.map((item) => (
-                  <option
-                    key={item.ItemCode}
-                    id={item.ItemCode}
-                    value={item.ItemCode}
-                  >
-                    {item.Style} {item.Colour} {item.Size} - {item.ItemCode}
-                  </option>
-                ))}
+              {searchResults.likeResults &&
+                searchResults.likeResults.map(
+                  (item) =>
+                    item && (
+                      <option
+                        key={item["Item Code"]}
+                        id={item["Item Code"]}
+                        value={item["Item Code"]}
+                      >
+                        {item.Style} {item.Colour} {item.Size} -{" "}
+                        {item["Item Code"]}
+                      </option>
+                    ),
+                )}
             </select>
             <button
               onClick={(e) => handleAddProduct(e)}
