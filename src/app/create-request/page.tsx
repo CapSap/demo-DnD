@@ -57,7 +57,7 @@ export default async function CreateRequestPage() {
     const jsonArray = rows.slice(1).map((row) => {
       const values = row.split(",");
       const jsonObject = {
-        Color: "",
+        Colour: "",
         GTIN: "",
         "Item Code": "",
         Size: "",
