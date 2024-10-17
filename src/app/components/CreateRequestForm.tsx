@@ -141,10 +141,10 @@ export default function CreateRequestForm({
     const firstResult =
       (results.exactResults &&
         results.exactResults.length > 0 &&
-        results.exactResults[0].ItemCode) ||
+        results.exactResults[0]["Item Code"]) ||
       (results.likeResults &&
         results.likeResults.length > 0 &&
-        results.likeResults[0].ItemCode);
+        results.likeResults[0]["Item Code"]);
 
     // set the value to first results from search
     setSelectedProductID(firstResult);
