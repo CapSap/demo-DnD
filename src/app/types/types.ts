@@ -73,7 +73,7 @@ export type ProntoData = {
 export type ProntoCSV = {
   Colour: string;
   GTIN: string;
-  ["Item Code"]: string;
+  ItemCode: string;
   Size: string;
   Style: string;
 };

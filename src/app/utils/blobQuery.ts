@@ -37,7 +37,8 @@ export async function exactLocalSearch(searchString: string) {
         Style: "",
       };
       headers.forEach((header, index) => {
-        jsonObject[header.trim() as keyof ProntoCSV] = values[index].trim();
+        jsonObject[header.replace(/\s/g, "") as keyof ProntoCSV] =
+          values[index].trim();
       });
       return jsonObject;
     });

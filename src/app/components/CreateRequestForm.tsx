@@ -141,10 +141,10 @@ export default function CreateRequestForm({
     const firstResult =
       (results.exactResults &&
         results.exactResults.length > 0 &&
-        results.exactResults[0]["Item Code"]) ||
+        results.exactResults[0].ItemCode) ||
       (results.likeResults &&
         results.likeResults.length > 0 &&
-        results.likeResults[0]["Item Code"]);
+        results.likeResults[0].ItemCode);
 
     // set the value to first results from search
     setSelectedProductID(firstResult);
@@ -348,12 +348,11 @@ export default function CreateRequestForm({
                   (item) =>
                     item && (
                       <option
-                        key={item["Item Code"]}
-                        id={item["Item Code"]}
-                        value={item["Item Code"]}
+                        key={item.ItemCode}
+                        id={item.ItemCode}
+                        value={item.ItemCode}
                       >
-                        {item.Style} {item.Colour} {item.Size} -{" "}
-                        {item["Item Code"]}
+                        {item.Style} {item.Colour} {item.Size} - {item.ItemCode}
                       </option>
                     ),
                 )}
