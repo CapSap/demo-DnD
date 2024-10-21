@@ -58,7 +58,6 @@ export async function exactLocalSearch(searchString: string) {
   });
 
   const sanityCheckows = db.prepare("SELECT * FROM prontoData LIMIT 1").all();
-  console.log("sanity check", sanityCheckows);
 
   const statement = db.prepare(`
     SELECT DISTINCT ItemCode, Style, Colour, Size 
@@ -70,8 +69,6 @@ export async function exactLocalSearch(searchString: string) {
 
   const rows = statement.all(searchString, searchString) as ProntoData[];
 
-  console.log("exact search results", rows);
-
   db.close();
   return rows;
 }
@@ -79,8 +76,6 @@ export async function exactLocalSearch(searchString: string) {
 export async function likeLocalSearch(searchString: string) {
   const data = await list();
   const dlUrl = data.blobs[0].downloadUrl;
-
-  console.log(dlUrl);
 
   async function fetchCSV() {
     // split download in 2 due to 2mb cache limit

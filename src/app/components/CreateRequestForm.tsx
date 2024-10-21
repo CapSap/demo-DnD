@@ -135,7 +135,6 @@ export default function CreateRequestForm({
     const response = await fetch(`/api/prontoBlob?search=${searchString}`);
     const results = await response.json();
 
-    console.log("results", results);
     setSearchResults(results);
 
     const firstResult =
