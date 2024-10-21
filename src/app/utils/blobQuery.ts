@@ -90,7 +90,9 @@ export async function likeLocalSearch(searchString: string) {
 
   function csvToJson(csvString: string) {
     const rows = csvString.trim().split("\n");
-    const headers = rows[0].split(",");
+    const headers = rows[0]
+      .split(",")
+      .map((header) => header.replace(/\s/g, ""));
 
     const jsonArray = rows.slice(1).map((row) => {
       const values = row.split(",");
