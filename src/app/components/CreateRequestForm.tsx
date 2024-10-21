@@ -9,7 +9,10 @@ import { debounce } from "lodash";
 export default function CreateRequestForm({
   createStoreRequest,
 }: {
-  createStoreRequest: (request: IPartialStoreRequest) => Promise<string>;
+  createStoreRequest: (request: IPartialStoreRequest) => Promise<{
+    success: boolean;
+    message: string;
+  }>;
 }) {
   const selectInput = useRef<HTMLSelectElement>(null);
 
@@ -20,7 +23,11 @@ export default function CreateRequestForm({
   const [address, setAddress] = useState("");
   const [items, setItems] = useState<PartialItem[]>([]);
 
-  const [message, setMessage] = useState("");
+  const [dbResponse, setDbResponse] = useState<{
+    success: boolean;
+    message: string;
+  }>();
+
   const [loading, setLoading] = useState(false);
   const [destination, setDestination] = useState("");
 
@@ -69,8 +76,8 @@ export default function CreateRequestForm({
       destination: destination,
     };
 
-    const message = await createStoreRequest(payload);
-    setMessage(message);
+    const result = await createStoreRequest(payload);
+    setDbResponse(result);
     setLoading(false);
   }
 
@@ -365,6 +372,18 @@ export default function CreateRequestForm({
               <option disabled className="p-10">
                 Search for some skus
               </option>
+              {searchResults.exactResults.length > 0 && (
+                <option
+                  key={searchResults.exactResults[0].ItemCode}
+                  id={searchResults.exactResults[0].ItemCode}
+                  value={searchResults.exactResults[0].ItemCode}
+                >
+                  {searchResults.exactResults[0].Style}{" "}
+                  {searchResults.exactResults[0].Colour}{" "}
+                  {searchResults.exactResults[0].Size} -{" "}
+                  {searchResults.exactResults[0].ItemCode}
+                </option>
+              )}
               {searchResults.likeResults &&
                 searchResults.likeResults.map(
                   (item) =>
@@ -392,7 +411,7 @@ export default function CreateRequestForm({
             <button
               type="button"
               onClick={() => handleGetMoreItems()}
-              className="rounded-lg bg-indigo-200 px-4 py-1 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-300 focus-visible:ring active:bg-indigo-500"
+              className="rounded-lg bg-indigo-400 px-4 py-1 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-500 focus-visible:ring active:bg-indigo-700"
             >
               Add a blank request below
             </button>
@@ -443,16 +462,23 @@ export default function CreateRequestForm({
                 <StockChecker sku={item.sku} />
               </div>
             ))
-          : 'Search for some skus to add items, or add them manually via the "Add a request below" button'}
+          : `Search for some skus to add items, or add them manually via the "Add a request below" button. You can also scan the supplier's barcode`}
         <div className="flex flex-col items-center justify-center md:col-span-2">
+          <div>
+            {loading ? (
+              <p className="p-4 text-2xl font-bold">Sending Request...</p>
+            ) : (
+              <p className="p-4 text-2xl font-bold">{dbResponse?.message}</p>
+            )}
+          </div>
           <button
             type="submit"
-            className="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-lg font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700"
+            disabled={dbResponse?.success}
+            className="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-lg font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-500 disabled:shadow-none"
           >
             Submit request to store
           </button>
         </div>
-        <div>{loading ? "Sending Request..." : message}</div>
       </form>
     </div>
   );
