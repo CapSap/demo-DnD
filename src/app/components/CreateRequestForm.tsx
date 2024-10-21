@@ -444,6 +444,7 @@ export default function CreateRequestForm({
               </div>
             ))
           : 'Search for some skus to add items, or add them manually via the "Add a request below" button'}
+        <div>{loading ? "Sending Request..." : message}</div>
         <div className="flex flex-col items-center justify-center md:col-span-2">
           <button
             type="submit"
@@ -452,7 +453,6 @@ export default function CreateRequestForm({
             Submit request to store
           </button>
         </div>
-        <div>{loading ? "Sending Request..." : message}</div>
       </form>
     </div>
   );
