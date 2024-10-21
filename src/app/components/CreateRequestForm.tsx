@@ -365,6 +365,18 @@ export default function CreateRequestForm({
               <option disabled className="p-10">
                 Search for some skus
               </option>
+              {searchResults.exactResults.length > 0 && (
+                <option
+                  key={searchResults.exactResults[0].ItemCode}
+                  id={searchResults.exactResults[0].ItemCode}
+                  value={searchResults.exactResults[0].ItemCode}
+                >
+                  {searchResults.exactResults[0].Style}{" "}
+                  {searchResults.exactResults[0].Colour}{" "}
+                  {searchResults.exactResults[0].Size} -{" "}
+                  {searchResults.exactResults[0].ItemCode}
+                </option>
+              )}
               {searchResults.likeResults &&
                 searchResults.likeResults.map(
                   (item) =>
@@ -444,8 +456,14 @@ export default function CreateRequestForm({
               </div>
             ))
           : 'Search for some skus to add items, or add them manually via the "Add a request below" button'}
-        <div>{loading ? "Sending Request..." : message}</div>
         <div className="flex flex-col items-center justify-center md:col-span-2">
+          <div>
+            {loading ? (
+              <p className="p-4 text-2xl font-bold">Sending Request...</p>
+            ) : (
+              <p className="p-4 text-2xl font-bold">{message}</p>
+            )}
+          </div>
           <button
             type="submit"
             className="inline-block rounded-lg bg-indigo-500 px-8 py-3 text-center text-lg font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700"
