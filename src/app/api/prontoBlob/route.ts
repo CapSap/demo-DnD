@@ -9,9 +9,9 @@ export async function GET(request: NextRequest) {
   const searchString = searchParams.get("search") || "";
 
   // Call the query function
-  // const exactResults = exactLocalSearch(searchString);
+  const exactResults = await exactLocalSearch(searchString);
 
   const likeResults = await likeLocalSearch(searchString);
 
-  return NextResponse.json({ likeResults });
+  return NextResponse.json({ exactResults, likeResults });
 }
