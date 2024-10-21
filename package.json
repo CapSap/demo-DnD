@@ -10,8 +10,11 @@
     "format": "prettier . --write"
   },
   "dependencies": {
+    "@types/lodash": "^4.17.10",
+    "@vercel/blob": "^0.24.0",
     "better-sqlite3": "^11.1.2",
     "csv-parser": "^3.0.0",
+    "lodash": "^4.17.21",
     "mongodb": "^6.6.1",
     "mongoose": "^8.3.5",
     "next": "^14.2.9",

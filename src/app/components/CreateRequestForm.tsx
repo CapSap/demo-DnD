@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Item, IPartialStoreRequest, PartialItem } from "../types/types";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { IPartialStoreRequest, PartialItem, ProntoCSV } from "../types/types";
 import StockChecker from "./StockChecker";
+
+import { debounce } from "lodash";
 
 export default function CreateRequestForm({
   createStoreRequest,
@@ -16,41 +18,25 @@ export default function CreateRequestForm({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [items, setItems] = useState<PartialItem[]>([
-    // { tempID: Date.now(), quantity: "1", sku: "", description: "" },
-  ]);
+  const [items, setItems] = useState<PartialItem[]>([]);
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [destination, setDestination] = useState("");
 
   type SearchResults = {
-    exactResults: {
-      Style: string;
-      Colour: string;
-      Gender: string;
-      ItemCode: string;
-      Size: string;
-    }[];
-    likeResults: {
-      Style: string;
-      Colour: string;
-      Gender: string;
-      ItemCode: string;
-      Size: string;
-      rank: number;
-    }[];
+    likeResults: ProntoCSV[];
+    exactResults: ProntoCSV[];
   };
 
   const [productSearch, setProductSearch] = useState("");
-  const [products, setProducts] = useState<SearchResults>({
-    exactResults: [],
+  const [searchResults, setSearchResults] = useState<SearchResults>({
     likeResults: [],
+    exactResults: [],
   });
 
   const [selectedProductID, setSelectedProductID] = useState<string>();
-
-  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   function handleGetMoreItems() {
     setItems((prevState) => {
@@ -67,7 +53,6 @@ export default function CreateRequestForm({
   }
 
   async function handleFormSubmit() {
-    console.log("form submit running");
     if (requestingStore === "default") {
       handleSubmitWithDefaultLocation();
       return;
@@ -127,41 +112,75 @@ export default function CreateRequestForm({
     }
   }
 
+  useEffect(() => {
+    const debouncedSearch = debounce((searchString) => {
+      handleSearch(searchString);
+    }, 500);
+    if (productSearch) {
+      debouncedSearch(productSearch);
+    }
+
+    return () => {
+      debouncedSearch.cancel(); // Cleanup on unmount or when productSearch changes
+    };
+  }, [productSearch]);
+
   async function handleSearch(searchString: string) {
     if (!productSearch) {
       return;
     }
+
+    // Cancel the previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create a new AbortController for the current request
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     console.log("handle search searching..");
 
     // take in user input
     // hit api
-    const response = await fetch(`/api/prontoDatabase?search=${searchString}`);
-    const results = await response.json();
+    try {
+      const response = await fetch(`/api/prontoBlob?search=${searchString}`, {
+        signal: controller.signal,
+      });
 
-    console.log("results", results);
-    setProducts(results);
+      const results = await response.json();
 
-    const firstResult =
-      (results.exactResults &&
-        results.exactResults.length > 0 &&
-        results.exactResults[0].ItemCode) ||
-      (results.likeResults &&
-        results.likeResults.length > 0 &&
-        results.likeResults[0].ItemCode);
+      setSearchResults(results);
 
-    // set the value to first results from search
-    setSelectedProductID(firstResult);
+      const firstResult =
+        (results.exactResults &&
+          results.exactResults.length > 0 &&
+          results.exactResults[0].ItemCode) ||
+        (results.likeResults &&
+          results.likeResults.length > 0 &&
+          results.likeResults[0].ItemCode);
+
+      // set the value to first results from search
+      setSelectedProductID(firstResult);
+    } catch (err) {
+      const error = err as Error; // Assert that err is of type Error
+      if (error.name === "AbortError") {
+        console.log("Search request aborted.");
+      } else {
+        console.error("Failed to fetch search results:", err);
+      }
+    }
   }
 
   function handleAddProduct(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     console.log("button clicked", selectedProductID);
 
-    const seletecedExact = products.exactResults.find(
+    const seletecedExact = searchResults.exactResults.find(
       (product) => product.ItemCode === selectedProductID,
     );
 
-    const selectedLike = products.likeResults.find(
+    const selectedLike = searchResults.likeResults.find(
       (product) => product.ItemCode === selectedProductID,
     );
 
@@ -186,27 +205,6 @@ export default function CreateRequestForm({
       ];
     });
   }
-
-  useEffect(() => {
-    // Clear the previous timeout if the user types again within the delay
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
-    }
-
-    // Set a new timeout to run the search after a delay (e.g., 500ms)
-    debounceTimeout.current = setTimeout(() => {
-      if (productSearch.length > 5) {
-        handleSearch(productSearch);
-      }
-    }, 500);
-
-    // Cleanup function to clear the timeout if the component unmounts
-    return () => {
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
-      }
-    };
-  }, [productSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleDestinationChange(location: string) {
     setDestination(location);
@@ -367,16 +365,19 @@ export default function CreateRequestForm({
               <option disabled className="p-10">
                 Search for some skus
               </option>
-              {products.likeResults &&
-                products.likeResults.map((item) => (
-                  <option
-                    key={item.ItemCode}
-                    id={item.ItemCode}
-                    value={item.ItemCode}
-                  >
-                    {item.Style} {item.Colour} {item.Size} - {item.ItemCode}
-                  </option>
-                ))}
+              {searchResults.likeResults &&
+                searchResults.likeResults.map(
+                  (item) =>
+                    item && (
+                      <option
+                        key={item.ItemCode}
+                        id={item.ItemCode}
+                        value={item.ItemCode}
+                      >
+                        {item.Style} {item.Colour} {item.Size} - {item.ItemCode}
+                      </option>
+                    ),
+                )}
             </select>
             <button
               onClick={(e) => handleAddProduct(e)}

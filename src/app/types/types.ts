@@ -55,3 +55,25 @@ export type IPartialStoreRequest = Partial<
   _id?: string;
   items: PartialItem[];
 };
+
+export type ProntoData = {
+  ID: number;
+  ItemCode: string;
+  GTIN: string;
+  Style: string;
+  Colour: string;
+  Size: string;
+  Gender: string;
+  ItemCategoryCode: string;
+  ItemClassCode: string;
+  ABCClass: string;
+  Brand: string;
+};
+
+export type ProntoCSV = {
+  Colour: string;
+  GTIN: string;
+  ItemCode: string;
+  Size: string;
+  Style: string;
+};

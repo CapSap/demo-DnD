@@ -4,6 +4,60 @@ import csv from "csv-parser";
 import path from "path";
 
 export async function initializeProntoData(): Promise<void> {
+  // Check if the file exists
+  /*   const filePath = "src/app/api/prontoDatabase/pronto-database.csv";
+
+  const fileExists = await fs.promises
+    .access(filePath)
+    .then(() => true)
+    .catch(() => false);
+
+  if (!fileExists) {
+    console.log("csv file does not exist. Exiting function.");
+    return;
+  } */
+
+  // get the filename of the csv file
+
+  function findCsvFile(): Promise<string | false> {
+    return new Promise((resolve, reject) => {
+      const directoryPath = path.join(process.cwd(), "prontoData/");
+
+      // Check if the directory exists
+      if (!fs.existsSync(directoryPath)) {
+        resolve(false); // Return false if the directory does not exist
+        return;
+      }
+      // Read the directory
+      fs.readdir(directoryPath, (err, files) => {
+        if (err) {
+          reject(`Error reading directory: ${err}`);
+          return;
+        }
+
+        // Loop through the files to find the first CSV file
+        for (const file of files) {
+          if (path.extname(file) === ".csv") {
+            // Return the full path to the file
+            resolve(path.join(directoryPath, file));
+            return;
+          }
+        }
+        // If no CSV file is found
+        resolve(false);
+      });
+    });
+  }
+
+  const prontoCsvFileName = await findCsvFile();
+
+  if (!prontoCsvFileName) {
+    console.log("csv file does not exist. Exiting function.");
+    return;
+  } else {
+    console.log(prontoCsvFileName);
+  }
+
   const db = new Database("prontoData.db");
 
   // variable to count rows in the CSV file
@@ -14,7 +68,7 @@ export async function initializeProntoData(): Promise<void> {
         process.cwd(),
         "src/app/api/prontoDatabase/pronto-database.csv",
       );
-      fs.createReadStream(csvFilePath)
+      fs.createReadStream(prontoCsvFileName)
         .pipe(csv())
         .on("data", () => csvRowCount++)
         .on("end", () => resolve(csvRowCount))
@@ -123,14 +177,11 @@ export async function initializeProntoData(): Promise<void> {
     );
 
     return new Promise<void>((resolve, reject) => {
-      fs.createReadStream(csvFilePath)
+      fs.createReadStream(prontoCsvFileName as string)
         .pipe(csv())
         .on("data", (data) => results.push(data))
         .on("end", () => {
           insertMany(results);
-          console.log(
-            "CSV file successfully processed and data inserted into the database.",
-          );
           db.close();
           resolve();
         })

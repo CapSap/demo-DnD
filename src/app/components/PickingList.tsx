@@ -210,7 +210,6 @@ export default function PickingList({
           item.quantityPicked <= item.quantity &&
           Number(item.quantityPicked) > 0
         ) {
-          console.log(item.itemStatus);
           return {
             ...item,
             quantityPicked: (Number(item.quantityPicked) - 1).toString(),
@@ -250,7 +249,6 @@ export default function PickingList({
       // update the items
       const updatedItems: Item[] = prev[orderIndex].items.map((item) => {
         if (item.sku === sku) {
-          console.log(item.itemStatus);
           return {
             ...item,
             itemStatus: "short picked",
