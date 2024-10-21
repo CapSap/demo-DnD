@@ -8,10 +8,13 @@ export default async function CreateRequestPage() {
     "use server";
     const response = await dbCreate(request);
     if (response.error) {
-      return `Error creating store request: ${response.error.message}. Details: ${response.error.details}`;
+      return {
+        success: false,
+        message: `Error creating store request: ${response.error.message}. Details: ${response.error.details}`,
+      };
     }
 
-    return `Store request created successfully!`;
+    return { success: true, message: `Store request created successfully!` };
   }
 
   return (
