@@ -36,6 +36,7 @@ export default function CreateRequestForm({
   });
 
   const [selectedProductID, setSelectedProductID] = useState<string>();
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   function handleGetMoreItems() {
     setItems((prevState) => {
@@ -128,25 +129,47 @@ export default function CreateRequestForm({
     if (!productSearch) {
       return;
     }
+
+    // Cancel the previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Create a new AbortController for the current request
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     console.log("handle search searching..");
 
     // take in user input
     // hit api
-    const response = await fetch(`/api/prontoBlob?search=${searchString}`);
-    const results = await response.json();
+    try {
+      const response = await fetch(`/api/prontoBlob?search=${searchString}`, {
+        signal: controller.signal,
+      });
 
-    setSearchResults(results);
+      const results = await response.json();
 
-    const firstResult =
-      (results.exactResults &&
-        results.exactResults.length > 0 &&
-        results.exactResults[0].ItemCode) ||
-      (results.likeResults &&
-        results.likeResults.length > 0 &&
-        results.likeResults[0].ItemCode);
+      setSearchResults(results);
 
-    // set the value to first results from search
-    setSelectedProductID(firstResult);
+      const firstResult =
+        (results.exactResults &&
+          results.exactResults.length > 0 &&
+          results.exactResults[0].ItemCode) ||
+        (results.likeResults &&
+          results.likeResults.length > 0 &&
+          results.likeResults[0].ItemCode);
+
+      // set the value to first results from search
+      setSelectedProductID(firstResult);
+    } catch (err) {
+      const error = err as Error; // Assert that err is of type Error
+      if (error.name === "AbortError") {
+        console.log("Search request aborted.");
+      } else {
+        console.error("Failed to fetch search results:", err);
+      }
+    }
   }
 
   function handleAddProduct(e: React.MouseEvent<HTMLButtonElement>) {
