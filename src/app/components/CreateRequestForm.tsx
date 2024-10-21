@@ -8,10 +8,8 @@ import { debounce } from "lodash";
 
 export default function CreateRequestForm({
   createStoreRequest,
-  prontoData,
 }: {
   createStoreRequest: (request: IPartialStoreRequest) => Promise<string>;
-  prontoData: ProntoCSV[];
 }) {
   const selectInput = useRef<HTMLSelectElement>(null);
 
@@ -113,16 +111,18 @@ export default function CreateRequestForm({
     }
   }
 
-  const handleLocalSearch = useCallback(
-    debounce((searchString) => {
-      handleSearch(searchString);
-    }, 1000),
-    [],
-  );
-
   useEffect(() => {
-    handleLocalSearch(productSearch);
-  }, [handleLocalSearch, productSearch]);
+    const debouncedSearch = debounce((searchString) => {
+      handleSearch(searchString);
+    }, 500);
+    if (productSearch) {
+      debouncedSearch(productSearch);
+    }
+
+    return () => {
+      debouncedSearch.cancel(); // Cleanup on unmount or when productSearch changes
+    };
+  }, [productSearch]);
 
   async function handleSearch(searchString: string) {
     if (!productSearch) {
