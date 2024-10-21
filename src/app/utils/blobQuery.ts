@@ -20,24 +20,17 @@ export async function exactLocalSearch(searchString: string) {
     return csvDataOne + csvDataTwo;
   }
 
-  const prontoData = await fetchCSV();
-
-  function csvToJson(csvString: string): ProntoCSV[] {
+  function csvToJson(csvString: string) {
     const rows = csvString.trim().split("\n");
-    const headers = rows[0].split(",");
+    const headers = rows[0]
+      .split(",")
+      .map((header) => header.replace(/\s/g, ""));
 
     const jsonArray = rows.slice(1).map((row) => {
       const values = row.split(",");
-      const jsonObject = {
-        Colour: "",
-        GTIN: "",
-        "Item Code": "",
-        Size: "",
-        Style: "",
-      };
+      const jsonObject: { [index: string]: string } = {};
       headers.forEach((header, index) => {
-        jsonObject[header.replace(/\s/g, "") as keyof ProntoCSV] =
-          values[index].trim();
+        jsonObject[header.trim()] = values[index].trim();
       });
       return jsonObject;
     });
@@ -45,18 +38,39 @@ export async function exactLocalSearch(searchString: string) {
     return jsonArray;
   }
 
-  const db = new Database(":memory:", prontoData);
+  const prontoData = await fetchCSV();
+  const json = csvToJson(prontoData);
+
+  const db = new Database(":memory:");
+
+  // Create a table based on CSV headers (assuming column names in CSV)
+  const headers = Object.keys(json[0]).map((h) => h.replace(/\s/g, ""));
+
+  const createTableQuery = `CREATE TABLE prontoData (${headers.map((h) => `"${h}" TEXT`).join(", ")});`;
+  db.prepare(createTableQuery).run();
+
+  // Insert CSV data into the database
+  const insertQuery = `INSERT INTO prontoData (${headers.join(", ")}) VALUES (${headers.map(() => "?").join(", ")})`;
+  const insertStmt = db.prepare(insertQuery);
+
+  json.forEach((row) => {
+    insertStmt.run(...headers.map((h) => row[h]));
+  });
 
   const sanityCheckows = db.prepare("SELECT * FROM prontoData LIMIT 1").all();
+  console.log("sanity check", sanityCheckows);
 
   const statement = db.prepare(`
-    SELECT ItemCode, Style, Colour, Size, Gender 
+    SELECT DISTINCT ItemCode, Style, Colour, Size 
     FROM prontoData
-    WHERE ItemCode = ? OR GTIN = ?
+    WHERE TRIM(LOWER(ItemCode)) = TRIM(LOWER(?)) 
+    OR TRIM(LOWER(GTIN)) = TRIM(LOWER(?))
     LIMIT 30
   `);
 
   const rows = statement.all(searchString, searchString) as ProntoData[];
+
+  console.log("exact search results", rows);
 
   db.close();
   return rows;
@@ -69,8 +83,6 @@ export async function likeLocalSearch(searchString: string) {
   console.log(dlUrl);
 
   async function fetchCSV() {
-    console.log("fetch running");
-
     // split download in 2 due to 2mb cache limit
     const resPartOne = await fetch(dlUrl, {
       headers: { range: "bytes=0-4194304" },
@@ -163,7 +175,5 @@ export async function likeLocalSearch(searchString: string) {
   const rows = statement.all(`${formattedSearchString}`) as ProntoData[];
 
   db.close();
-
-  console.log("finsihed");
   return rows;
 }
