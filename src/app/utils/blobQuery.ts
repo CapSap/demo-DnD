@@ -39,7 +39,7 @@ export async function exactLocalSearch(searchString: string) {
   }
 
   const prontoData = await fetchCSV();
-  const json = csvToJson(prontoData);
+  const json = csvToJson(prontoData).reverse();
 
   const db = new Database(":memory:");
 
@@ -111,7 +111,7 @@ export async function likeLocalSearch(searchString: string) {
     return jsonArray;
   }
 
-  const json = csvToJson(prontoData);
+  const json = csvToJson(prontoData).reverse();
 
   const db = new Database(":memory:");
 
