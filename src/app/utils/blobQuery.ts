@@ -63,9 +63,7 @@ export async function exactLocalSearch(searchString: string) {
 }
 
 export async function likeLocalSearch(searchString: string) {
-  console.log("first`");
   const data = await list();
-  console.log("sec`");
   const dlUrl = data.blobs[0].downloadUrl;
 
   console.log(dlUrl);
@@ -106,8 +104,6 @@ export async function likeLocalSearch(searchString: string) {
     return jsonArray;
   }
 
-  console.log("test");
-
   const json = csvToJson(prontoData);
 
   const db = new Database(":memory:");
@@ -125,7 +121,6 @@ export async function likeLocalSearch(searchString: string) {
   json.forEach((row) => {
     insertStmt.run(...headers.map((h) => row[h]));
   });
-
   db.exec(`DROP TABLE IF EXISTS prontoData_fts;`);
 
   // Create the FTS5 virtual table if it doesn't already exist
@@ -133,26 +128,26 @@ export async function likeLocalSearch(searchString: string) {
   CREATE VIRTUAL TABLE IF NOT EXISTS prontoData_fts
   USING fts5(
    combined,
-   item_code UNINDEXED
+   ItemCode UNINDEXED
   );
 `);
 
   db.exec(`DELETE FROM prontoData_fts;`);
 
   db.exec(`
-  INSERT INTO prontoData_fts (combined, item_code)
+  INSERT INTO prontoData_fts (combined, ItemCode)
   SELECT Style || ' ' || Colour || ' ' || Size || ' ' , ItemCode
   FROM prontoData;
 `);
 
   // Check if the FTS table contains data
-  const checkStatement = db.prepare(`SELECT * FROM prontoData_fts LIMIT 10 `);
+  const checkStatement = db.prepare(`SELECT * FROM prontoData_fts LIMIT 2`);
   const checkRows = checkStatement.all();
 
   const statement = db.prepare(`
-  SELECT prontoData.Style, prontoData.colour, prontoData.Size, prontoData.ItemCode, combined, bm25(prontoData_fts) as rank
+  SELECT DISTINCT prontoData.Style, prontoData.colour, prontoData.Size, prontoData.ItemCode, combined, bm25(prontoData_fts) as rank
   FROM prontoData_fts
-  JOIN prontoData on prontoData.ItemCode = prontoData_fts.item_code
+  JOIN prontoData on prontoData.ItemCode = prontoData_fts.ItemCode
   WHERE combined MATCH ?
   ORDER BY rank
   LIMIT 10
