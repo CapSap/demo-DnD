@@ -22,6 +22,7 @@ export default function CreateRequestForm({
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [items, setItems] = useState<PartialItem[]>([]);
+  const [destination, setDestination] = useState("");
 
   const [dbResponse, setDbResponse] = useState<{
     success: boolean;
@@ -29,7 +30,7 @@ export default function CreateRequestForm({
   }>();
 
   const [loading, setLoading] = useState(false);
-  const [destination, setDestination] = useState("");
+  const [searchFeedback, setSearchFeedback] = useState("");
 
   type SearchResults = {
     likeResults: ProntoCSV[];
@@ -137,6 +138,8 @@ export default function CreateRequestForm({
       return;
     }
 
+    setSearchFeedback(searchString);
+
     // Cancel the previous request if it exists
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -176,6 +179,8 @@ export default function CreateRequestForm({
       } else {
         console.error("Failed to fetch search results:", err);
       }
+    } finally {
+      setSearchFeedback("");
     }
   }
 
@@ -350,6 +355,9 @@ export default function CreateRequestForm({
 
         <div className="flex flex-col border-2 border-green-300 p-4">
           <label htmlFor="scanBox">Scan or search for skus below</label>
+          {searchFeedback ? (
+            <p>Searching for pronto skus related to: "{searchFeedback} ..."</p>
+          ) : null}
           <div className="my-1 flex content-around">
             <input
               className="mr-4 flex-grow rounded-md border-0 p-2.5 py-1.5 pl-2 text-xl text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6"
