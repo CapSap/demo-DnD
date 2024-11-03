@@ -51,7 +51,6 @@ export const createStoreRequest = async (
   try {
     await dbConnect();
     // throw new Error("could not write to db");
-
     await StoreRequest.create(storeRequest);
     return { message: "Store request created successfully" };
   } catch (error) {

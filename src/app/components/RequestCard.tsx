@@ -30,6 +30,11 @@ export default function RequestCard({
       <p>
         Customer Phone: <strong>{request.phone}</strong>
       </p>
+      {request.notes ? (
+        <p>
+          Notes: <strong>{request.notes}</strong>
+        </p>
+      ) : null}
 
       <ul className="list-disc pl-6">
         {request.items.map((item: Item) => (
