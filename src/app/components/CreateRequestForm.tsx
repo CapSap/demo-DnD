@@ -21,6 +21,7 @@ export default function CreateRequestForm({
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [notes, setNotes] = useState("");
   const [items, setItems] = useState<PartialItem[]>([]);
 
   const [dbResponse, setDbResponse] = useState<{
@@ -74,6 +75,7 @@ export default function CreateRequestForm({
       address: address,
       items: items,
       destination: destination,
+      notes: notes,
     };
 
     const result = await createStoreRequest(payload);
@@ -345,6 +347,15 @@ export default function CreateRequestForm({
               />
             </>
           ) : null}
+
+          <label htmlFor="notes">Notes</label>
+          <textarea
+            name="notes"
+            id="notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
         </div>
         <h2 className="font-bold">Item info</h2>
 
