@@ -40,6 +40,7 @@ export type IStoreRequest = {
   updatedAt: string;
   destination: string;
   notes: string;
+  createdAt: string;
 };
 
 export type RequestStatus =
