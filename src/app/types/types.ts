@@ -39,6 +39,7 @@ export type IStoreRequest = {
   tracking: string;
   updatedAt: string;
   destination: string;
+  notes: string;
 };
 
 export type RequestStatus =

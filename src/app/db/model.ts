@@ -20,11 +20,10 @@ const storeRequestSchema = new mongoose.Schema<IStoreRequest>(
       ],
       default: "new",
     },
-
+    notes: { type: String, default: "" },
     ibt: { type: String, default: "" },
     tracking: { type: String, default: "" },
     destination: String,
-
     items: [
       {
         sku: String,
