@@ -11,6 +11,10 @@ export default function RequestCard({
   request: IStoreRequest;
   style: string;
 }) {
+  const date = new Date(request.createdAt);
+
+  console.log(request.createdAt, date.toLocaleString());
+
   return (
     <div
       className={`m-2 min-w-96 justify-center border-2 border-slate-400 p-2 ${style}`}
@@ -66,6 +70,15 @@ export default function RequestCard({
           IBT: <strong>{request.ibt}</strong>
         </p>
       ) : null}
+
+      <p>
+        Created Date:{" "}
+        <strong>{new Date(request.createdAt).toLocaleString()}</strong>
+      </p>
+      <p>
+        Last Updated:{" "}
+        <strong>{new Date(request.updatedAt).toLocaleString()}</strong>
+      </p>
     </div>
   );
 }
